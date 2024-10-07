@@ -38,7 +38,7 @@ pipeline {
                 sh 'mvn compile'
             }
         }
-        /*stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
                    sh 'mvn sonar:sonar'
