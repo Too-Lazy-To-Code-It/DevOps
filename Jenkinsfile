@@ -50,7 +50,7 @@ pipeline {
                     steps {
                         script {
                             // Build the Docker image
-                            sh 'docker build -t my-spring-boot-app .'
+                            sh 'sudo docker build -t my-spring-boot-app .'
                         }
                     }
                 }
@@ -58,7 +58,7 @@ pipeline {
                     steps {
                         script {
                             // Run the Docker container on port 8081
-                            sh 'docker run -d -p 8081:8080 --name my-spring-boot-app my-spring-boot-app'
+                            sh 'sudo docker run -d -p 8081:8080 --name my-spring-boot-app my-spring-boot-app'
                         }
                     }
                 }
