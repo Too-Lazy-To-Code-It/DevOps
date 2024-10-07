@@ -50,7 +50,7 @@ pipeline {
                     steps {
                         script {
                             // Build the Docker image
-                            sh 'docker build -t my-spring-boot-app .'
+                            sh 'docker build --no-cache -t my-spring-boot-app .'
                         }
                     }
                 }
