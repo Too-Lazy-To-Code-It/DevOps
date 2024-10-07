@@ -28,7 +28,7 @@ pipeline {
     agent any
 
     stages {
-    /*
+
         stage('Clean') {
             steps {
                 sh 'mvn clean'
@@ -46,7 +46,7 @@ pipeline {
                 }
             }
         }
-*/
+/*
         stage('Docker Build') {
                     steps {
                         script {
@@ -63,6 +63,6 @@ pipeline {
                         }
                     }
                 }
-
+*/
     }
 }
