@@ -50,7 +50,7 @@ pipeline {
                     steps {
                         script {
                             // Build the Docker image
-                            sh 'sudo docker build -t my-spring-boot-app .'
+                            sh 'echo "0000" | sudo -S docker build -t my-spring-boot-app .'
                         }
                     }
                 }
