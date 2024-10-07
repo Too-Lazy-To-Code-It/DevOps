@@ -26,7 +26,7 @@
 
 pipeline {
     agent any
-
+/*
     stages {
         stage('Clean') {
             steps {
@@ -45,7 +45,7 @@ pipeline {
                 }
             }
         }
-
+*/
         stage('Docker Build') {
                     steps {
                         script {
