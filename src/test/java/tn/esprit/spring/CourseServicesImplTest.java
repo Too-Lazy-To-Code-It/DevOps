@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import tn.esprit.spring.entities.Course;
+import tn.esprit.spring.entities.Support;
 import tn.esprit.spring.entities.TypeCourse;
 import tn.esprit.spring.repositories.ICourseRepository;
 import tn.esprit.spring.services.CourseServicesImpl;
@@ -14,7 +15,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CourseServicesImplTest {
+ class CourseServicesImplTest {
 
     @InjectMocks
     private CourseServicesImpl courseService;  // Service to be tested
@@ -26,19 +27,19 @@ public class CourseServicesImplTest {
     private List<Course> courseList;  // List of courses for testing
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         // Initialize a Course object
-        course = new Course(1L, 101, TypeCourse.COLLECTIVE_ADULT, null, 49.99f, 10, null);
+        course = new Course(1L, 101, TypeCourse.COLLECTIVE_ADULT, Support.SKI, 49.99f, 10, null);
 
         // Initialize list with mock data
         courseList = new ArrayList<Course>() {{
-            add(new Course(2L, 102, TypeCourse.COLLECTIVE_ADULT, null, 59.99f, 12, null));
-            add(new Course(3L, 103, TypeCourse.INDIVIDUAL, null, 69.99f, 15, null));
+            add(new Course(2L, 102, TypeCourse.COLLECTIVE_ADULT, Support.SNOWBOARD, 59.99f, 12, null));
+            add(new Course(3L, 103, TypeCourse.INDIVIDUAL, Support.SKI, 69.99f, 15, null));
         }};
     }
 
     @Test
-    public void testRetrieveAllCourses() {
+     void testRetrieveAllCourses() {
         // Mock the repository call to return the list of courses
         when(courseRepository.findAll()).thenReturn(courseList);
 
@@ -54,7 +55,7 @@ public class CourseServicesImplTest {
     }
 
     @Test
-    public void testAddCourse() {
+     void testAddCourse() {
         // Mock the repository call to save the course
         when(courseRepository.save(course)).thenReturn(course);
 
@@ -65,12 +66,12 @@ public class CourseServicesImplTest {
         assertNotNull(savedCourse);
         assertEquals(course.getNumCourse(), savedCourse.getNumCourse());
 
-        // Verify that the repository's save method was called
+        // Verify that the repositorym's save method was called
         verify(courseRepository).save(course);
     }
 
     @Test
-    public void testUpdateCourse() {
+     void testUpdateCourse() {
         // Mock the repository call to update the course
         when(courseRepository.save(course)).thenReturn(course);
 
@@ -86,7 +87,7 @@ public class CourseServicesImplTest {
     }
 
     @Test
-    public void testRetrieveCourse() {
+     void testRetrieveCourse() {
         // Mock the repository call to find a course by its ID
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
