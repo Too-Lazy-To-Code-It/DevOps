@@ -35,4 +35,7 @@ public class Course implements Serializable {
 	@OneToMany(mappedBy= "course")
 	Set<Registration> registrations;
 
+	public Course(Long numC ,int lvl , TypeCourse typeCourse, Support support, int i2, int i3) {
+
+	}
 }
