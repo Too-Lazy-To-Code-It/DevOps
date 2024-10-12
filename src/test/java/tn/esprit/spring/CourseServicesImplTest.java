@@ -2,6 +2,7 @@ package tn.esprit.spring;import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import tn.esprit.spring.entities.Course;
 import tn.esprit.spring.entities.Support;
 import tn.esprit.spring.entities.TypeCourse;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @BeforeEach
      void setUp() {
-        // Initialize a Course object
+       // Initialize a Course object
         course = new Course(1L, 101, TypeCourse.COLLECTIVE_ADULT, Support.SKI, 49.99f, 10, null);
 
         // Initialize list with mock data
@@ -41,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
      void testRetrieveAllCourses() {
         // Mock the repository call to return the list of courses
-        when(courseRepository.findAll()).thenReturn(courseList);
+       Mockito.when(courseRepository.findAll()).thenReturn(courseList);
 
         // Call the service method
         List<Course> retrievedCourses = courseService.retrieveAllCourses();
@@ -57,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
      void testAddCourse() {
         // Mock the repository call to save the course
-        when(courseRepository.save(course)).thenReturn(course);
+       Mockito.when(courseRepository.save(course)).thenReturn(course);
 
         // Call the service method
         Course savedCourse = courseService.addCourse(course);
@@ -73,7 +74,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
      void testUpdateCourse() {
         // Mock the repository call to update the course
-        when(courseRepository.save(course)).thenReturn(course);
+       Mockito.when(courseRepository.save(course)).thenReturn(course);
 
         // Call the service method
         Course updatedCourse = courseService.updateCourse(course);
@@ -89,7 +90,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
      void testRetrieveCourse() {
         // Mock the repository call to find a course by its ID
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+       Mockito.when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
         // Call the service method
         Course retrievedCourse = courseService.retrieveCourse(1L);
