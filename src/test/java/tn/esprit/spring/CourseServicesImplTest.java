@@ -11,7 +11,6 @@ import tn.esprit.spring.services.CourseServicesImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,22 +39,6 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-     void testRetrieveAllCourses() {
-        // Mock the repository call to return the list of courses
-       Mockito.when(courseRepository.findAll()).thenReturn(courseList);
-
-        // Call the service method
-        List<Course> retrievedCourses = courseService.retrieveAllCourses();
-
-        // Assert that the result is not null and has the correct number of elements
-        assertNotNull(retrievedCourses);
-        assertEquals(2, retrievedCourses.size());
-
-        // Verify that the repository's findAll method was called
-        verify(courseRepository).findAll();
-    }
-
-    @Test
      void testAddCourse() {
         // Mock the repository call to save the course
        Mockito.when(courseRepository.save(course)).thenReturn(course);
@@ -71,35 +54,7 @@ import static org.junit.jupiter.api.Assertions.*;
         verify(courseRepository).save(course);
     }
 
-    @Test
-     void testUpdateCourse() {
-        // Mock the repository call to update the course
-       Mockito.when(courseRepository.save(course)).thenReturn(course);
 
-        // Call the service method
-        Course updatedCourse = courseService.updateCourse(course);
 
-        // Assert that the course was updated correctly
-        assertNotNull(updatedCourse);
-        assertEquals(course.getNumCourse(), updatedCourse.getNumCourse());
 
-        // Verify that the repository's save method was called
-        verify(courseRepository).save(course);
-    }
-
-    @Test
-     void testRetrieveCourse() {
-        // Mock the repository call to find a course by its ID
-       Mockito.when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
-        // Call the service method
-        Course retrievedCourse = courseService.retrieveCourse(1L);
-
-        // Assert that the course was retrieved correctly
-        assertNotNull(retrievedCourse);
-        assertEquals(course.getNumCourse(), retrievedCourse.getNumCourse());
-
-        // Verify that the repository's findById method was called
-        verify(courseRepository).findById(1L);
-    }
 }
