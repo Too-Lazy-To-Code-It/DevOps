@@ -37,12 +37,18 @@ class CourseServicesImplTest {
     @Test
     void testRetrieveCourse() {
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         Course retrievedCourse = courseService.retrieveCourse(1L);
-
         assertNotNull(retrievedCourse);
         assertEquals(course.getNumCourse(), retrievedCourse.getNumCourse());
-
         verify(courseRepository).findById(1L);
+    }
+
+    @Test
+    void testRetrieveAllCourses() {
+        when(courseRepository.findAll()).thenReturn(courseList);
+        List<Course> retrievedCourses = courseService.retrieveAllCourses();
+        assertNotNull(retrievedCourses);
+        assertEquals(2, retrievedCourses.size());
+        verify(courseRepository).findAll();
     }
 }
