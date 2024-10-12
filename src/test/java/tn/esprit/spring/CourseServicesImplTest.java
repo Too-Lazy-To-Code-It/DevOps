@@ -51,4 +51,23 @@ class CourseServicesImplTest {
         assertEquals(2, retrievedCourses.size());
         verify(courseRepository).findAll();
     }
+
+    @Test
+    void testAddCourse() {
+       when(courseRepository.save(course)).thenReturn(course);
+       Course savedCourse = courseService.addCourse(course);
+       assertNotNull(savedCourse);
+       assertEquals(course.getNumCourse(), savedCourse.getNumCourse());
+       verify(courseRepository).save(course);
+    }
+
+    @Test
+    void testUpdateCourse() {
+        when(courseRepository.save(course)).thenReturn(course);
+        Course updatedCourse = courseService.updateCourse(course);
+        assertNotNull(updatedCourse);
+        assertEquals(course.getNumCourse(), updatedCourse.getNumCourse());
+        verify(courseRepository).save(course);
+    }
+
 }
