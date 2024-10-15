@@ -6,9 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tn.esprit.spring.entities.*;
-import tn.esprit.spring.repositories.ICourseRepository;
 import tn.esprit.spring.repositories.ISubscriptionRepository;
-import tn.esprit.spring.services.CourseServicesImpl;
 import tn.esprit.spring.services.SubscriptionServicesImpl;
 
 import java.time.LocalDate;
@@ -16,13 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-
-public class SubscriptionClassTest {
+class SubscriptionClassTest {
 
     @Mock
     ISubscriptionRepository subRepository;
@@ -61,7 +58,7 @@ public class SubscriptionClassTest {
 
 
     @Test
-    void testRetrieveCourse() {
+    void testRetrieveSubscription() {
         when(subRepository.findById(1L)).thenReturn(Optional.of(s));
         Subscription retrievedCourse = subServices.retrieveSubscriptionById(1L);
         assertNotNull(retrievedCourse);
