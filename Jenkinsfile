@@ -46,12 +46,12 @@ pipeline {
                 }
             }
         }
+        stage('Test Class Subscription') {
+                 steps {
+                     sh 'mvn test'
+               }
+            }
 
-        stage('Compile') {
-             steps {
-                 sh 'mvn test'
-           }
-        }
 /*
         stage('Docker Build') {
                     steps {
