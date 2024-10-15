@@ -46,6 +46,12 @@ pipeline {
                 }
             }
         }
+
+        stage('Compile') {
+             steps {
+                 sh 'mvn test'
+           }
+        }
 /*
         stage('Docker Build') {
                     steps {
