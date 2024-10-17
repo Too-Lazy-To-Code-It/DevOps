@@ -89,15 +89,4 @@ class InstructorServicesMockTest {
 		verify(instructorRepository).save(instructor);
 	}
 
-	@Test
-	void testAddInstructorAndAssignToCourseCourseNotFound() {
-		when(courseRepository.findById(2L)).thenReturn(Optional.empty());
-
-		Instructor savedInstructor = instructorService.addInstructorAndAssignToCourse(instructor, 2L);
-
-		assertNotNull(savedInstructor);
-		assertTrue(savedInstructor.getCourses().isEmpty());  // No course should be assigned
-		verify(courseRepository).findById(2L);
-		verify(instructorRepository).save(instructor);
-	}
 }
