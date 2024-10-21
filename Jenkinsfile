@@ -51,7 +51,14 @@ pipeline {
                      sh 'mvn test'
                }
             }
-
+        stage('Deploy to Nexus') {
+                    steps {
+                        script {
+                            // Deploy the project, skipping tests
+                            sh 'mvn clean deploy -DskipTests'
+                        }
+                    }
+                }
 /*
         stage('Docker Build') {
                     steps {
