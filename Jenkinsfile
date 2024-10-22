@@ -51,10 +51,15 @@ pipeline {
                      sh 'mvn test'
                }
             }
+            stage('Build') {
+                        steps {
+                            sh 'mvn package'
+                        }
+                    }
         stage('Deploy to Nexus') {
                     steps {
                         script {
-                            // Deploy the project, skipping tests
+
                             sh 'mvn clean deploy -DskipTests'
                         }
                     }
