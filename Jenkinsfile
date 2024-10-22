@@ -64,6 +64,12 @@ pipeline {
                         }
                     }
                 }
+        stage('Test and Coverage') {
+                    steps {
+                        sh 'mvn test jacoco:report'
+                    }
+                }
+
 /*
         stage('Docker Build') {
                     steps {
