@@ -1,31 +1,11 @@
-/*pipeline {
-    agent any
-
-    stages {
-        stage('Main') {
-            steps {
-                // Compile the Spring Boot project
-                echo "Echo Test of Rayen Branch"
-            }
-        }
-
-        stage('Build') {
-            steps {
-                // Check out the code from the repository
-                checkout scm
-
-                // Run Maven clean install
-                sh 'mvn clean package'
-            }
-        }
-
-
-    }
-}*/
-
-
 pipeline {
     agent any
+
+    environment {
+            DOCKER_CREDENTIALS_ID = 'docker-hub-credentials' // ID you set in the previous step
+            DOCKER_IMAGE = 'mohamedrayen/gestion-station-ski' // Replace with your image name
+        }
+
 
     stages {
 
@@ -74,6 +54,17 @@ pipeline {
                                 sh 'docker build -t gestion-station-ski-app .'
                             }
                         }
+
+        stage('Push Docker Image') {
+                    steps {
+                        script {
+                            // Log in to Docker Hub
+                            docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                                // Push the Docker image
+                                sh 'docker push $DOCKER_IMAGE'
+                            }
+                        }
+                    }
 
 
 /*
