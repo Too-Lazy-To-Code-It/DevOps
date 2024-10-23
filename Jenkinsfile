@@ -69,6 +69,12 @@ pipeline {
                         sh 'mvn test jacoco:report'
                     }
                 }
+        stage('Build Docker Image') {
+                            steps {
+                                sh 'docker build -t gestion-station-ski-app .'
+                            }
+                        }
+
 
 /*
         stage('Docker Build') {
