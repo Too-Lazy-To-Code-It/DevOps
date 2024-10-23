@@ -67,23 +67,6 @@ pipeline {
                     }
 
 
-/*
-        stage('Docker Build') {
-                    steps {
-                        script {
-                            // Build the Docker image
-                            sh 'docker build --no-cache -t my-spring-boot-app .'
-                        }
-                    }
-                }
-                stage('Docker Run') {
-                    steps {
-                        script {
-                            // Run the Docker container on port 8081
-                            sh 'docker run -d -p 8081:8080 --name my-spring-boot-app my-spring-boot-app'
-                        }
-                    }
-                }
-*/
+        }
     }
 }
