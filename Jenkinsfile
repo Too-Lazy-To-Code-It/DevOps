@@ -65,8 +65,11 @@ pipeline {
                             }
                         }
                     }
-
-
+                }
+        stage('docker compose') {
+                                    steps {
+                                        sh 'docker build -t $DOCKER_IMAGE .'
+                                    }
         }
     }
 }
