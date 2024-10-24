@@ -18,7 +18,7 @@ services:
 
   app:
     image: mohamedrayen/gestion-station-ski:latest # or build using a Dockerfile
-    container_name: mohamedrayen/gestion-station-ski-container
+    container_name: mohamedrayen-gestion-station-ski-container
     depends_on:
       - mysql
     ports:
