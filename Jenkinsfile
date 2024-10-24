@@ -67,9 +67,9 @@ pipeline {
                     }
                 }
         stage('docker compose') {
-                                    steps {
-                                        sh 'docker compose up'
-                                    }
+                  steps {
+                         sh 'docker compose up'
+                 }
         }
     }
 }
