@@ -13,19 +13,13 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - springboot-network
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     restart: always
 
   app:
     image: mohamedrayen/gestion-station-ski:latest # or build using a Dockerfile
     container_name: mohamedrayen-gestion-station-ski-container
     depends_on:
-      mysql:
-        condition: service_healthy  # Wait for MySQL to be healthy before starting Spring Boot
+      - mysql
     ports:
       - "8082:8082"
     environment:
