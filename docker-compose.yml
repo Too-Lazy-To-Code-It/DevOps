@@ -5,10 +5,8 @@ services:
     image: mysql:latest
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: '0000'
-      MYSQL_DATABASE: 'stationSki'
-      MYSQL_USER: 'root'
-      MYSQL_PASSWORD: '0000'
+      MYSQL_ROOT_PASSWORD: '0000'  # Root password for MySQL
+      MYSQL_DATABASE: 'stationSki'  # Database to be created
     ports:
       - "3306:3306"
     volumes:
