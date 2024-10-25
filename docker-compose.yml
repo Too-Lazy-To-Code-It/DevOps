@@ -12,21 +12,27 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$MYSQL_ROOT_PASSWORD || exit 1"]
+      retries: 10
+      interval: 5s
+      timeout: 30s
 
   app:
-    image: mohamedrayen/gestion-station-ski:latest # or build using a Dockerfile
+    image: mohamedrayen/gestion-station-ski:latest  # or build using a Dockerfile
     container_name: mohamedrayen-gestion-station-ski-container
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
       - "8082:8082"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stationSki?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 0000
+      SPRING_DATASOURCE_PASSWORD: '0000'
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect  # Updated for MySQL 8.0
-    restart: always
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+    restart: on-failure
 
 volumes:
   mysql_data:
