@@ -12,7 +12,7 @@ import java.util.List;
 
 @Tag(name = "\uD83C\uDFC2 Skier Management")
 @RestController
-@RequestMapping("/skier")
+@RequestMapping("/ ")
 @RequiredArgsConstructor
 public class SkierRestController {
 
