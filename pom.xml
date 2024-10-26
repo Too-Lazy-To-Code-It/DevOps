@@ -60,18 +60,18 @@
 			<artifactId>mockito-core</artifactId>
 		</dependency>
 
-		<!-- Spring Boot Actuator for exposing metrics endpoints -->
+
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-
-		<!-- Micrometer Prometheus Registry for integrating with Prometheus -->
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
 		</dependency>
-
 
 	</dependencies>
 
