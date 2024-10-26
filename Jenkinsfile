@@ -17,8 +17,6 @@ pipeline {
         stage('Compile') {
             steps {
                 sh 'mvn compile'
-                echo "Complin done ********"
-                sh "mvn install"
             }
         }
         /*stage('SonarQube Analysis') {
@@ -33,6 +31,11 @@ pipeline {
                      sh 'mvn test'
                }
             }
+            stage('Install') {
+                                    steps {
+                sh "mvn install"
+                                    }
+                                }
             stage('Build') {
                         steps {
                             sh 'mvn package'
