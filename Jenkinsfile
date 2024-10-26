@@ -31,11 +31,7 @@ pipeline {
                      sh 'mvn test'
                }
             }
-            stage('Install') {
-                                    steps {
-                sh "mvn install"
-                                    }
-                                }
+
             stage('Build') {
                         steps {
                             sh 'mvn package'
