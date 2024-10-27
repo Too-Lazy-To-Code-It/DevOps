@@ -3,7 +3,7 @@ pipeline {
 
     environment {
             DOCKER_CREDENTIALS_ID = 'docker-hub-credentials' // ID you set in the previous step
-            DOCKER_IMAGE = 'mohamedrayen/gestion-station-ski' // Replace with your image name
+            DOCKER_IMAGE = 'mohamedrayen/sky_devops' // Replace with your image name
         }
 
 

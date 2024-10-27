@@ -19,8 +19,8 @@ services:
       timeout: 30s
 
   app:
-    image: mohamedrayen/gestion-station-ski:latest  # or build using a Dockerfile
-    container_name: mohamedrayen-gestion-station-ski-container
+    image: mohamedrayen/sky_devops:latest  # or build using a Dockerfile
+    container_name: gestion-station-ski-container
     depends_on:
       mysql:
         condition: service_healthy
