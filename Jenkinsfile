@@ -63,12 +63,12 @@ pipeline {
         stage('Docker Compose with Monitoring') {
             steps {
                 echo 'Starting application and monitoring services with Docker Compose...'
-                sh 'docker compose up -d'
+                sh 'docker-compose -f docker-compose.yml up -d'
             }
         }
     }
 
-   /* post {
+    /*post {
         always {
             echo 'Cleaning up Docker containers...'
             sh 'docker-compose down'
