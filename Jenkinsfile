@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'Docker-credentials' // Docker credentials ID
-        DOCKER_IMAGE = 'fedichebbi/course_devops' // Docker image name
+        DOCKER_CREDENTIALS_ID = 'Docker-credentials'
+        DOCKER_IMAGE = 'fedichebbi/course_devops'
     }
 
     stages {
@@ -33,10 +33,9 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                }
             }
         }
-}
-
 
         stage('Deploy to Nexus') {
             steps {
@@ -52,19 +51,27 @@ pipeline {
         }
 
         stage('Push Docker Image') {
-                    steps {
-                        script {
-                            docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                                sh 'docker push $DOCKER_IMAGE'
-                            }
-                        }
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        sh 'docker push $DOCKER_IMAGE'
                     }
                 }
-        
-        stage('docker compose') {
+            }
+        }
+
+        stage('Docker Compose with Monitoring') {
             steps {
-                sh 'docker compose up -d '
+                echo 'Starting application and monitoring services with Docker Compose...'
+                sh 'docker-compose up -d'
             }
         }
     }
+
+   /* post {
+        always {
+            echo 'Cleaning up Docker containers...'
+            sh 'docker-compose down'
+        }
+    }*/
 }
