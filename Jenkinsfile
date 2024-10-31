@@ -9,6 +9,12 @@ pipeline {
 
     stages {
 
+        stage('Initilize Containers') {
+            steps {
+                sh 'docker start nexus sonarqube prometheus'
+            }
+        }
+
         stage('Clean') {
             steps {
                 sh 'mvn clean'
