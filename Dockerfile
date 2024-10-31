@@ -1,22 +1,20 @@
 FROM openjdk:8-jdk-alpine
 EXPOSE 8089
 
-# Install necessary packages
+# Install wget to download the artifact
 RUN apk add --no-cache wget
 
-# Create application directory
-WORKDIR /app
+# Create a directory for the JAR file and the pom.xml
+RUN mkdir -p /app
 
-# Copy the Maven configuration and source code
-COPY pom.xml ./
-COPY src ./src/
+# Copy the pom.xml file into the /app directory
+COPY pom.xml /app/pom.xml
 
-# Download the JAR file
-RUN wget --user=admin --password=nexus -O gestion-station-ski-1.0.jar \
-    http://10.0.2.15:8081/repository/maven-releases/tn/esprit/spring/gestion-station-ski/1.0/gestion-station-ski-1.0.jar
+# Download the artifact into the /app directory
+RUN wget --user=admin --password=nexus -O /app/gestion-station-ski-1.0.jar http://10.0.2.15:8081/repository/maven-releases/tn/esprit/spring/gestion-station-ski/1.0/gestion-station-ski-1.0.jar
 
-# Verify the JAR file was downloaded correctly
-RUN ls -l gestion-station-ski-1.0.jar
+# Verify that the file was downloaded
+RUN ls -l /app/gestion-station-ski-1.0.jar /app/pom.xml
 
-# Set the command to run the application
-ENTRYPOINT ["java", "-jar", "gestion-station-ski-1.0.jar"]
+# Run the downloaded JAR file from the /app directory
+ENTRYPOINT ["java", "-jar", "/app/gestion-station-ski-1.0.jar"]
