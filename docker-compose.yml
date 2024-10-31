@@ -19,10 +19,10 @@ services:
       timeout: 30s
 
   app:
-    image: mohamedrayen/sky_devops:latest  # or build using a Dockerfile
-    #build:
-    #  context: .  # Path to your Dockerfile
-    #  dockerfile: Dockerfile  # Specify the Dockerfile if it's named differently
+    #image: mohamedrayen/sky_devops:latest  # or build using a Dockerfile
+    build:
+      context: .  # Path to your Dockerfile
+      dockerfile: Dockerfile  # Specify the Dockerfile if it's named differently
     container_name: gestion-station-ski-container
     depends_on:
       mysql:
