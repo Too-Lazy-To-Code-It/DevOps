@@ -5,7 +5,7 @@ services:
     image: mysql:latest
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: '0000'
+      MYSQL_ROOT_PASSWORD: ''
       MYSQL_DATABASE: 'stationSki'
     ports:
       - "3306:3306"
@@ -13,7 +13,7 @@ services:
       - mysql_data:/var/lib/mysql
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$MYSQL_ROOT_PASSWORD || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$MYSQL_ROOT_PASSWORD || exit 1"]
       retries: 10
       interval: 5s
       timeout: 30s
@@ -29,13 +29,19 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stationSki?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: '0000'
+      SPRING_DATASOURCE_PASSWORD: ''
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus
       MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED: true
       MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: true
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
     restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   prometheus:
     image: prom/prometheus:latest
@@ -46,17 +52,19 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - "9090:9090"
+    depends_on:
+      - app
 
-  #grafana:
-   # image: grafana/grafana:latest
-    #container_name: grafana
+ # grafana:
+    #image: grafana/grafana:latest
+   # container_name: grafana
     #ports:
-    #  - "3000:3000"
-   # depends_on:
+      - "3000:3000"
+    #depends_on:
     #  - prometheus
    # volumes:
     #  - grafana_data:/var/lib/grafana
 
 volumes:
   mysql_data:
-  #grafana_data:
+ # grafana_data:
