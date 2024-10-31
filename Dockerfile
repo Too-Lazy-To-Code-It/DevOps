@@ -1,17 +1,21 @@
+FROM maven:3.8.5-openjdk-8-slim AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy your pom.xml and source code to the container
+COPY pom.xml .
+COPY src ./src
+
+# Build the JAR file
+RUN mvn clean package
+
+# Second stage: use a smaller image for running the application
 FROM openjdk:8-jdk-alpine
 EXPOSE 8089
 
-# Install wget to download the artifact
-RUN apk add --no-cache wget
-
-# Create a directory for the JAR file
-RUN mkdir -p /app
-
-# Download the artifact into the /app directory
-RUN wget --user=admin --password=nexus -O /app/gestion-station-ski-1.0.jar http://10.0.2.15:8081/repository/maven-releases/tn/esprit/spring/gestion-station-ski/1.0/gestion-station-ski-1.0.jar
-
-# Verify that the file was downloaded
-RUN ls -l /app/gestion-station-ski-1.0.jar
+# Copy the built JAR file from the builder stage
+COPY --from=builder /app/target/gestion-station-ski-1.0.jar /app/gestion-station-ski-1.0.jar
 
 # Run the downloaded JAR file from the /app directory
 ENTRYPOINT ["java", "-jar", "/app/gestion-station-ski-1.0.jar"]
