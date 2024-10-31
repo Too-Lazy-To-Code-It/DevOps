@@ -1,6 +1,7 @@
 package tn.esprit.spring.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.entities.Skier;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class SubscriptionServicesImpl implements ISubscriptionServices{
@@ -62,6 +64,8 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
     public void retrieveSubscriptions() {
         for (Subscription sub: subscriptionRepository.findDistinctOrderByEndDateAsc()) {
             Skier   aSkier = skierRepository.findBySubscription(sub);
+            log.info(sub.getNumSub().toString() + " | "+ sub.getEndDate().toString()
+                    + " | "+ aSkier.getFirstName() + " " + aSkier.getLastName());
         }
     }
 
@@ -71,6 +75,6 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
         Float revenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.MONTHLY)
                 + subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.SEMESTRIEL)/6
                 + subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.ANNUAL)/12;
-
+        log.info("Monthly Revenue = " + revenue);
     }
 }
