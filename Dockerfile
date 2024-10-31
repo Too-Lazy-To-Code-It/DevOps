@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine
-EXPOSE 8082
+EXPOSE 8089
 
 # Install wget to download the artifact
 RUN apk add --no-cache wget
