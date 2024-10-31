@@ -12,19 +12,25 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+
 @Slf4j
 @AllArgsConstructor
 @Service
-public class RegistrationServicesImpl implements  IRegistrationServices{
+public class RegistrationServicesImpl implements IRegistrationServices {
 
-    private IRegistrationRepository registrationRepository;
-    private ISkierRepository skierRepository;
-    private ICourseRepository courseRepository;
-
+    private final IRegistrationRepository registrationRepository;
+    private final ISkierRepository skierRepository;
+    private final ICourseRepository courseRepository;
 
     @Override
     public Registration addRegistrationAndAssignToSkier(Registration registration, Long numSkier) {
         Skier skier = skierRepository.findById(numSkier).orElse(null);
+
+        if (skier == null) {
+            log.warn("Skier with ID {} not found.", numSkier);
+            return null;
+        }
+
         registration.setSkier(skier);
         return registrationRepository.save(registration);
     }
@@ -33,6 +39,16 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
     public Registration assignRegistrationToCourse(Long numRegistration, Long numCourse) {
         Registration registration = registrationRepository.findById(numRegistration).orElse(null);
         Course course = courseRepository.findById(numCourse).orElse(null);
+
+        if (registration == null) {
+            log.warn("Registration with ID {} not found.", numRegistration);
+            return null;
+        }
+        if (course == null) {
+            log.warn("Course with ID {} not found.", numCourse);
+            return null;
+        }
+
         registration.setCourse(course);
         return registrationRepository.save(registration);
     }
@@ -43,56 +59,44 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
         Skier skier = skierRepository.findById(numSkieur).orElse(null);
         Course course = courseRepository.findById(numCours).orElse(null);
 
-        if (skier == null || course == null) {
+        if (skier == null) {
+            log.warn("Skier with ID {} not found.", numSkieur);
+            return null;
+        }
+        if (course == null) {
+            log.warn("Course with ID {} not found.", numCours);
             return null;
         }
 
-        if(registrationRepository.countDistinctByNumWeekAndSkier_NumSkierAndCourse_NumCourse(registration.getNumWeek(), skier.getNumSkier(), course.getNumCourse()) >=1){
-            log.info("Sorry, you're already register to this course of the week :" + registration.getNumWeek());
+        // Check if a registration for this skier, course, and week already exists
+        if (registrationRepository.countDistinctByNumWeekAndSkier_NumSkierAndCourse_NumCourse(
+                registration.getNumWeek(), skier.getNumSkier(), course.getNumCourse()) >= 1) {
+            log.info("Registration for Skier ID {} and Course ID {} in week {} already exists.",
+                    skier.getNumSkier(), course.getNumCourse(), registration.getNumWeek());
             return null;
         }
 
         int ageSkieur = Period.between(skier.getDateOfBirth(), LocalDate.now()).getYears();
-        log.info("Age " + ageSkieur);
 
         switch (course.getTypeCourse()) {
             case INDIVIDUAL:
-                log.info("add without tests");
                 return assignRegistration(registration, skier, course);
 
             case COLLECTIVE_CHILDREN:
-                if (ageSkieur < 16) {
-                    log.info("Ok CHILD !");
-                    if (registrationRepository.countByCourseAndNumWeek(course, registration.getNumWeek()) < 6) {
-                        log.info("Course successfully added !");
-                        return assignRegistration(registration, skier, course);
-                    } else {
-                        log.info("Full Course ! Please choose another week to register !");
-                        return null;
-                    }
-                }
-                else{
-                    log.info("Sorry, your age doesn't allow you to register for this course ! \n Try to Register to a Collective Adult Course...");
+                if (ageSkieur < 16 && registrationRepository.countByCourseAndNumWeek(course, registration.getNumWeek()) < 6) {
+                    return assignRegistration(registration, skier, course);
                 }
                 break;
 
             default:
-                if (ageSkieur >= 16) {
-                    log.info("Ok ADULT !");
-                    if (registrationRepository.countByCourseAndNumWeek(course, registration.getNumWeek()) < 6) {
-                        log.info("Course successfully added !");
-                        return assignRegistration(registration, skier, course);
-                    } else {
-                        log.info("Full Course ! Please choose another week to register !");
-                        return null;
-                    }
+                if (ageSkieur >= 16 && registrationRepository.countByCourseAndNumWeek(course, registration.getNumWeek()) < 6) {
+                    return assignRegistration(registration, skier, course);
                 }
-                log.info("Sorry, your age doesn't allow you to register for this course ! \n Try to Register to a Collective Child Course...");
         }
         return registration;
-
     }
-    private Registration assignRegistration (Registration registration, Skier skier, Course course){
+
+    private Registration assignRegistration(Registration registration, Skier skier, Course course) {
         registration.setSkier(skier);
         registration.setCourse(course);
         return registrationRepository.save(registration);
