@@ -6,3 +6,11 @@ scrape_configs:
     metrics_path: '/prometheus'
     static_configs:
       - targets: ['10.0.2.15:8080']
+
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql:3306']
+
+  - job_name: 'spring-boot-app'
+    static_configs:
+      - targets: ['app:8082']
