@@ -7,10 +7,14 @@ scrape_configs:
     static_configs:
       - targets: ['10.0.2.15:8080']
 
-  - job_name: 'mysql'
+  - job_name: 'prometheus'
     static_configs:
-      - targets: ['mysql:3306']
+      - targets: ['10.0.2.15:9090']
 
   - job_name: 'spring-boot-app'
     static_configs:
-      - targets: ['app:8082']
+      - targets: ['10.0.2.15:8082']
+
+  - job_name: 'mysql'
+    static_configs:
+      - targets: [ '10.0.2.15:3306' ]
