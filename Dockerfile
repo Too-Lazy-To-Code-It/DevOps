@@ -1,21 +1,26 @@
-FROM maven:3.8.5-openjdk-8-slim AS builder
-
-# Set the working directory
-WORKDIR /app
-
-# Copy your pom.xml and source code to the container
-COPY pom.xml .
-COPY src ./src
-
-# Build the JAR file
-RUN mvn clean package
-
-# Second stage: use a smaller image for running the application
 FROM openjdk:8-jdk-alpine
+
+# Expose the application port
 EXPOSE 8089
 
-# Copy the built JAR file from the builder stage
-COPY --from=builder /app/target/gestion-station-ski-1.0.jar /app/gestion-station-ski-1.0.jar
+# Create a directory for the application
+RUN mkdir -p /app
 
-# Run the downloaded JAR file from the /app directory
-ENTRYPOINT ["java", "-jar", "/app/gestion-station-ski-1.0.jar"]
+# Copy the pom.xml file and the src directory into the container
+COPY pom.xml /app/
+COPY src /app/src/
+
+# Install wget (if not already included in the image)
+RUN apk add --no-cache wget
+
+# Download the JAR file using wget
+RUN wget --user=admin --password=nexus -O /app/gestion-station-ski-1.0.jar http://10.0.2.15:8081/repository/maven-releases/tn/esprit/spring/gestion-station-ski/1.0/gestion-station-ski-1.0.jar
+
+# Verify that the JAR file has been downloaded successfully
+RUN ls -l /app/gestion-station-ski-1.0.jar
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Define the entry point for the container
+ENTRYPOINT ["java", "-jar", "gestion-station-ski-1.0.jar"]
