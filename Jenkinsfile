@@ -19,6 +19,11 @@ pipeline {
                 sh 'mvn compile'
             }
         }
+        stage('Test Class Subscription') {
+                         steps {
+                             sh 'mvn test'
+                       }
+                    }
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
@@ -26,11 +31,6 @@ pipeline {
                 }
             }
         }
-        stage('Test Class Subscription') {
-                 steps {
-                     sh 'mvn test'
-               }
-            }
 
             stage('Build') {
                         steps {
