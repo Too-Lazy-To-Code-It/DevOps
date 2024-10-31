@@ -68,10 +68,10 @@ pipeline {
         }
     }
 
-     /*post {
+     post {
             always {
                 echo 'Cleaning up Docker containers...'
                 sh 'docker compose -f docker-compose.yml down'
             }
-        }*/
+        }
 }
