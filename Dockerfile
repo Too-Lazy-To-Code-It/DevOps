@@ -1,10 +1,6 @@
 FROM openjdk:8-jdk-alpine
 EXPOSE 8089
 
-
-COPY pom.xml .
-COPY src ./src
-
 RUN apk add --no-cache wget
 
 RUN mkdir -p /app
