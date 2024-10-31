@@ -37,6 +37,11 @@ services:
       MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: true
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
     restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8089/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     logging:
       driver: "json-file"
       options:
@@ -56,17 +61,17 @@ services:
     ports:
       - "9090:9090"
 
-
-      # grafana:
-    #image: grafana/grafana:latest
-    #container_name: grafana
-   # ports:
-     # - "3000:3000"
-   # depends_on:
-    #  - prometheus
-   # volumes:
-   #   - grafana_data:/var/lib/grafana
+  # Uncomment this section if you want to add Grafana
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - prometheus
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
 
 volumes:
   mysql_data:
-  #grafana_data:
+  # grafana_data:  # Uncomment this if you add Grafana
