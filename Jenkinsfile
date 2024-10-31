@@ -31,6 +31,11 @@ pipeline {
                 sh 'mvn test'
             }
         }
+        stage('Test and Coverage') {
+            steps {
+                sh 'mvn test jacoco:report'
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
@@ -52,11 +57,6 @@ pipeline {
             }
         }
 
-        stage('Test and Coverage') {
-            steps {
-                sh 'mvn test jacoco:report'
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
