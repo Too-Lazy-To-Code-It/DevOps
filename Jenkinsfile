@@ -6,13 +6,6 @@ pipeline {
         DOCKER_IMAGE = 'fedichebbi/course_devops'
     }
 
-    post {
-            always {
-                echo 'Cleaning up Docker containers...'
-                sh 'docker compose -f docker-compose.yml down'
-            }
-        }
-
     stages {
         stage('Checkout GIT') {
             steps {
@@ -74,4 +67,11 @@ pipeline {
             }
         }
     }
+
+     /*post {
+            always {
+                echo 'Cleaning up Docker containers...'
+                sh 'docker compose -f docker-compose.yml down'
+            }
+        }*/
 }
