@@ -90,8 +90,8 @@ pipeline {
         }
         failure {
             script {
-                // Get the name of the current stage that failed
-                def failedStage = currentBuild.rawBuild.getAction(hudson.model.Run$Action).getCurrentStage().getName()
+                // Get the name of the last completed stage
+                def failedStage = currentBuild.getPreviousBuild()?.getAction(org.jenkinsci.plugins.workflow.steps.FlowExecutionOwner).getExecution()?.getCurrentStage()?.getName() ?: "Unknown Stage"
 
                 def message = """
                 {
@@ -109,6 +109,7 @@ pipeline {
                 """
             }
         }
+
 
     }
 }
