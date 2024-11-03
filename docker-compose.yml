@@ -43,17 +43,17 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    ports:
-      - "9090:9090"
-    depends_on:
-      - app
+  #prometheus:
+    #image: prom/prometheus:latest
+   # container_name: prometheus
+   # volumes:
+    #  - ./prometheus.yml:/etc/prometheus/prometheus.yml
+   # command:
+   #   - '--config.file=/etc/prometheus/prometheus.yml'
+   # ports:
+    #  - "9090:9090"
+   # depends_on:
+    #  - app
 
  # grafana:
     #image: grafana/grafana:latest

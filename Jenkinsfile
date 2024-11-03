@@ -4,6 +4,8 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'
         DOCKER_IMAGE = 'fedichebbi/course_devops'
+        SLACK_CHANNEL = '#devopsjenkinspipline'
+        SLACK_CREDENTIALS_ID = 'slack-webhook'
     }
 
     stages {
@@ -21,14 +23,14 @@ pipeline {
                 sh 'mvn compile'
             }
         }
-        
+
         stage('Mockito Test') {
             steps {
                 echo 'Running tests...'
                 sh 'mvn test'
             }
         }
-        
+
         stage('SonarQube / Jacoco') {
             steps {
                 withSonarQubeEnv('SonarQube') {
@@ -66,12 +68,17 @@ pipeline {
                 sh 'docker compose -f docker-compose.yml up -d'
             }
         }
+
+        stage('Slack Notification') {
+            steps {
+                script {
+                    def message = "Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) completed with status: ${currentBuild.currentResult}."
+                    slackSend(channel: SLACK_CHANNEL,
+                              color: currentBuild.currentResult == 'SUCCESS' ? 'good' : 'danger',
+                              message: message)
+                }
+            }
+        }
     }
 
-     /*post {
-            always {
-                echo 'Cleaning up Docker containers...'
-                sh 'docker compose -f docker-compose.yml down'
-            }
-        }*/
 }
