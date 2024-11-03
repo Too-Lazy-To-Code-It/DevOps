@@ -72,7 +72,17 @@ pipeline {
     post {
         success {
             script {
-                def message = '{"text": "Deployment completed successfully!"}'
+                def message = """
+                {
+                    "text": "🚀 *Deployment Successful!* :tada:",
+                    "attachments": [
+                        {
+                            "color": "#36a64f",
+                            "text": "Your application has been deployed successfully. :white_check_mark:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Thank you for your patience!*"
+                        }
+                    ]
+                }
+                """
                 sh """
                 curl -X POST -H 'Content-type: application/json' --data '${message}' '${SLACK_WEBHOOK_URL}'
                 """
@@ -80,7 +90,17 @@ pipeline {
         }
         failure {
             script {
-                def message = '{"text": "Deployment failed! Please check the Jenkins console output."}'
+                def message = """
+                {
+                    "text": "❌ *Deployment Failed!* :x:",
+                    "attachments": [
+                        {
+                            "color": "#ff0000",
+                            "text": "Something went wrong during the deployment process. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
+                        }
+                    ]
+                }
+                """
                 sh """
                 curl -X POST -H 'Content-type: application/json' --data '${message}' '${SLACK_WEBHOOK_URL}'
                 """
