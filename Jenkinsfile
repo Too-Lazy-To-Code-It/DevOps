@@ -5,7 +5,6 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'
         DOCKER_IMAGE = 'fedichebbi/course_devops'
         SLACK_CHANNEL = '#devopsjenkinspipline'
-        SLACK_WEBHOOK_URL = credentials('slack-webhook')
     }
 
     stages {
@@ -77,7 +76,7 @@ pipeline {
                 slackSend(channel: SLACK_CHANNEL,
                           color: 'good',
                           message: message,
-                          webhookURL: SLACK_WEBHOOK_URL)
+                          tokenCredentialId: 'slack-webhook')
             }
         }
         failure {
@@ -86,7 +85,7 @@ pipeline {
                 slackSend(channel: SLACK_CHANNEL,
                           color: 'danger',
                           message: message,
-                          webhookURL: SLACK_WEBHOOK_URL)
+                          tokenCredentialId: 'slack-webhook')
             }
         }
     }
