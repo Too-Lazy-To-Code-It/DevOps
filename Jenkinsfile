@@ -41,7 +41,7 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                sh 'mvn deploy -Dnexus.login=raa -Dnexus.password=nexus'
+                sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
             }
         }
 
