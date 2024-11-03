@@ -17,6 +17,8 @@ services:
       retries: 10
       interval: 5s
       timeout: 30s
+    networks:
+      - springboot-network
 
   app:
     #image: mohamedrayen/sky_devops:latest  # or build using a Dockerfile
@@ -39,8 +41,15 @@ services:
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: prometheus
       MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED: true
       MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: true
-
+    networks:
+      - springboot-network
+  
     restart: on-failure
 
 volumes:
   mysql_data:
+
+
+networks:
+  springboot-network:
+    driver: bridge

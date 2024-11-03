@@ -31,16 +31,16 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Test and Coverage') {
+        /*stage('Test and Coverage') {
             steps {
                 sh 'mvn test jacoco:report'
             }
-        }
+        }*/
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube Analysis and Jacoco') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh 'mvn sonar:sonar'
+                    sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                 }
             }
         }
