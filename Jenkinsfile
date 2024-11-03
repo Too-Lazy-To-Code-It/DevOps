@@ -5,6 +5,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'
         DOCKER_IMAGE = 'fedichebbi/course_devops'
         SLACK_CHANNEL = '#devopsjenkinspipline'
+        SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
     }
 
     stages {
@@ -72,21 +73,20 @@ pipeline {
     post {
         success {
             script {
-                def message = "Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) completed successfully."
-                slackSend(channel: SLACK_CHANNEL,
-                          color: 'good',
-                          message: message,
-                          tokenCredentialId: 'slack-webhook')
+                sendSlackNotification("Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) completed successfully.", 'good')
             }
         }
         failure {
             script {
-                def message = "Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) failed."
-                slackSend(channel: SLACK_CHANNEL,
-                          color: 'danger',
-                          message: message,
-                          tokenCredentialId: 'slack-webhook')
+                sendSlackNotification("Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) failed.", 'danger')
             }
         }
     }
+}
+
+def sendSlackNotification(message, color) {
+    def payload = "{\"text\": \"${message}\"}"
+    sh """
+    curl -X POST -H 'Content-type: application/json' --data '${payload}' '${SLACK_WEBHOOK_URL}'
+    """
 }
