@@ -4,8 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'
         DOCKER_IMAGE = 'fedichebbi/course_devops'
-        SLACK_CHANNEL = '#devopsjenkinspipline'
-        SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
+        SLACK_WEBHOOK_URL = "${env.SLACK_WEBHOOK_URL}" // Ensure this is set as an environment variable
     }
 
     stages {
@@ -73,20 +72,19 @@ pipeline {
     post {
         success {
             script {
-                sendSlackNotification("Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) completed successfully.", 'good')
+                def message = '{"text": "Deployment completed successfully!"}'
+                sh """
+                curl -X POST -H 'Content-type: application/json' --data '${message}' '${SLACK_WEBHOOK_URL}'
+                """
             }
         }
         failure {
             script {
-                sendSlackNotification("Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) failed.", 'danger')
+                def message = '{"text": "Deployment failed! Please check the Jenkins console output."}'
+                sh """
+                curl -X POST -H 'Content-type: application/json' --data '${message}' '${SLACK_WEBHOOK_URL}'
+                """
             }
         }
     }
-}
-
-def sendSlackNotification(message, color) {
-    def payload = "{\"text\": \"${message}\"}"
-    sh """
-    curl -X POST -H 'Content-type: application/json' --data '${payload}' '${SLACK_WEBHOOK_URL}'
-    """
 }
