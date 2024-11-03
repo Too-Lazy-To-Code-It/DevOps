@@ -10,66 +10,52 @@ pipeline {
     stages {
         stage('Checkout GIT') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    echo 'Pulling...'
-                    git branch: 'fedicbi',
-                        url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
-                        credentialsId: 'github-log'
-                }
+                echo 'Pulling...'
+                git branch: 'fedicbbi',
+                    url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
+                    credentialsId: 'github-log'
             }
         }
 
         stage('Maven Compile') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    sh 'mvn compile'
-                }
+                sh 'mvn compile'
             }
         }
 
         stage('Mockito Test') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    echo 'Running tests...'
-                    sh 'mvn test'
-                }
+                echo 'Running tests...'
+                sh 'mvn test'
             }
         }
 
         stage('SonarQube / Jacoco') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
-                    }
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                 }
             }
         }
 
         stage('Deploy to Nexus') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    echo 'Deploying to Nexus...'
-                    sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
-                }
+                echo 'Deploying to Nexus...'
+                sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    sh 'docker build -t $DOCKER_IMAGE .'
-                }
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    script {
-                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                            sh 'docker push $DOCKER_IMAGE'
-                        }
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        sh 'docker push $DOCKER_IMAGE'
                     }
                 }
             }
@@ -77,10 +63,8 @@ pipeline {
 
         stage('Docker Compose with Monitoring') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    echo 'Starting application and monitoring services with Docker Compose...'
-                    sh 'docker compose -f docker-compose.yml up -d'
-                }
+                echo 'Starting application and monitoring services with Docker Compose...'
+                sh 'docker compose -f docker-compose.yml up -d'
             }
         }
     }
@@ -106,14 +90,16 @@ pipeline {
         }
         failure {
             script {
-                def failedStage = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)?.getShortDescription()
+                // Get the name of the current stage that failed
+                def failedStage = currentBuild.rawBuild.getAction(hudson.model.Run$Action).getCurrentStage().getName()
+
                 def message = """
                 {
                     "text": "❌ *Deployment Failed!* :x:",
                     "attachments": [
                         {
                             "color": "#ff0000",
-                            "text": "Something went wrong during the deployment process in stage: ${failedStage}. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
+                            "text": "Something went wrong during the deployment process in stage: *${failedStage}*. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
                         }
                     ]
                 }
@@ -123,5 +109,6 @@ pipeline {
                 """
             }
         }
+
     }
 }
