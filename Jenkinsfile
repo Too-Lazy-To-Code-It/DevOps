@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout GIT') {
             steps {
                 echo 'Pulling...'
-                git branch: 'fedichebbi',
+                git branch: 'bbvn',
                     url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
                     credentialsId: 'github-log'
             }
@@ -90,13 +90,18 @@ pipeline {
         }
         failure {
             script {
+                // Extract the last log message to determine the failed stage
+                def logLines = currentBuild.rawBuild.getLog(100) // Get the last 100 lines of the log
+                def failedStage = logLines.find { it.contains("ERROR") || it.contains("FAILURE") }?.tokenize(' ')?.getAt(0)
+
+                // Prepare the failure message
                 def message = """
                 {
                     "text": "❌ *Deployment Failed!* :x:",
                     "attachments": [
                         {
                             "color": "#ff0000",
-                            "text": "Something went wrong during the deployment process. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
+                            "text": "Something went wrong during the deployment process at stage: *${failedStage ?: 'Unknown Stage'}*. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
                         }
                     ]
                 }
