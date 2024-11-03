@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout GIT') {
             steps {
                 echo 'Pulling...'
-                git branch: 'fedicbbi',
+                git branch: 'fediebbi',
                     url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
                     credentialsId: 'github-log'
             }
@@ -90,16 +90,13 @@ pipeline {
         }
         failure {
             script {
-                // Get the name of the last completed stage
-                def failedStage = currentBuild.getPreviousBuild()?.getAction(org.jenkinsci.plugins.workflow.steps.FlowExecutionOwner).getExecution()?.getCurrentStage()?.getName() ?: "Unknown Stage"
-
                 def message = """
                 {
                     "text": "❌ *Deployment Failed!* :x:",
                     "attachments": [
                         {
                             "color": "#ff0000",
-                            "text": "Something went wrong during the deployment process in stage: *${failedStage}*. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
+                            "text": "Something went wrong during the deployment process. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
                         }
                     ]
                 }
@@ -109,7 +106,5 @@ pipeline {
                 """
             }
         }
-
-
     }
 }
