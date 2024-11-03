@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout GIT') {
             steps {
                 echo 'Pulling...'
-                git branch: 'bbvn',
+                git branch: 'fedbi',
                     url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
                     credentialsId: 'github-log'
             }
@@ -90,11 +90,8 @@ pipeline {
         }
         failure {
             script {
-                // Extract the last log message to determine the failed stage
-                def logLines = currentBuild.rawBuild.getLog(100) // Get the last 100 lines of the log
-                def failedStage = logLines.find { it.contains("ERROR") || it.contains("FAILURE") }?.tokenize(' ')?.getAt(0)
-
-                // Prepare the failure message
+                // Get the stage name that failed
+                def failedStage = currentBuild.getPreviousSuccessfulBuild()?.getStages()?.find { it.getStatus() == 'FAILURE' }?.getName()
                 def message = """
                 {
                     "text": "❌ *Deployment Failed!* :x:",
