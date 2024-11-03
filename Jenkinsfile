@@ -5,7 +5,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'
         DOCKER_IMAGE = 'fedichebbi/course_devops'
         SLACK_CHANNEL = '#devopsjenkinspipline'
-        SLACK_CREDENTIALS_ID = 'slack-webhook'
+        SLACK_WEBHOOK_URL = credentials('slack-webhook')
     }
 
     stages {
@@ -68,17 +68,26 @@ pipeline {
                 sh 'docker compose -f docker-compose.yml up -d'
             }
         }
+    }
 
-        stage('Slack Notification') {
-            steps {
-                script {
-                    def message = "Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) completed with status: ${currentBuild.currentResult}."
-                    slackSend(channel: SLACK_CHANNEL,
-                              color: currentBuild.currentResult == 'SUCCESS' ? 'good' : 'danger',
-                              message: message)
-                }
+    post {
+        success {
+            script {
+                def message = "Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) completed successfully."
+                slackSend(channel: SLACK_CHANNEL,
+                          color: 'good',
+                          message: message,
+                          webhookURL: SLACK_WEBHOOK_URL)
+            }
+        }
+        failure {
+            script {
+                def message = "Job '${env.JOB_NAME}' (#${env.BUILD_NUMBER}) failed."
+                slackSend(channel: SLACK_CHANNEL,
+                          color: 'danger',
+                          message: message,
+                          webhookURL: SLACK_WEBHOOK_URL)
             }
         }
     }
-
 }
