@@ -31,7 +31,7 @@ pipeline {
 
         stage('SonarQube / Jacoco') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('sonar') {
                     sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                 }
             }
@@ -40,7 +40,7 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying to Nexus...'
-                sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
+                sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=Nexus'
             }
         }
 
