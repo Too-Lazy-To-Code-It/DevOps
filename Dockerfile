@@ -8,6 +8,8 @@ RUN apk add --no-cache wget
 RUN mkdir -p /app
 
 COPY pom.xml /app/pom.xml
+COPY src/main/resources/application.yml /app/config/application.yml
+
 
 # Download the artifact into the /app directory
 RUN wget --user=redres_nexus --password=4f4949fa-4dd6-35f4-bc47-ed76080ccbba -O /app/gestion-station-ski-1.0.jar http://192.168.8.104:8081/repository/maven-releases/tn/esprit/spring/gestion-station-ski/1.0/gestion-station-ski-1.0.jar
