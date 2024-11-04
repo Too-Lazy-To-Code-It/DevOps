@@ -21,7 +21,6 @@ services:
       - springboot-network
 
   app:
-    #image: mohamedrayen/sky_devops:latest  # or build using a Dockerfile
     build:
       context: .  # Path to your Dockerfile
       dockerfile: Dockerfile  # Specify the Dockerfile if it's named differently
@@ -43,12 +42,22 @@ services:
       MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: true
     networks:
       - springboot-network
-  
     restart: on-failure
+
+  frontend:
+    image: mohamedrayen/front-test:latest
+    container_name: sky-frontend
+    depends_on:
+      app:
+        condition: service_started
+    ports:
+      - "3001:3001"
+    networks:
+      - springboot-network
+    restart: always
 
 volumes:
   mysql_data:
-
 
 networks:
   springboot-network:
