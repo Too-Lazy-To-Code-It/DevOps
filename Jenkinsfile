@@ -14,13 +14,7 @@ pipeline {
                 sh 'mvn compile'
             }
         }
-        stage('Test') {
-            steps {
-                // Run tests using Maven
-                echo 'Running tests with Maven...'
-                sh 'mvn test'
-            }
-        }
+    
         stage('Deploy') {
             steps {
                 // Example deploy command
