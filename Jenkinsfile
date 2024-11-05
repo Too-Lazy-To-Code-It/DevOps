@@ -10,7 +10,7 @@ pipeline {
 
         stage('Initialize Containers') {
             steps {
-                sh 'docker start nexus sonarqube prometheus'
+                sh 'docker start nexus sonarqube prometheus grafana'
             }
         }
 
