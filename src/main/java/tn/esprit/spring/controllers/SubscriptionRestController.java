@@ -32,7 +32,7 @@ public class SubscriptionRestController {
     }
 
     @GetMapping("/all")
-    public Subscription getall(){
+    public List<Subscription> getallsubsc(){
         return subscriptionServices.getall();
     }
     
