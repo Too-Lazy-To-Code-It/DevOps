@@ -9,24 +9,22 @@ pipeline {
         }
         stage('Build') {
             steps {
-                // Example build command
-                sh 'echo Building...'
-                // Add your actual build command here, for example:
-                // sh './gradlew build' or 'mvn clean install'
+                // Maven compile command
+                echo 'Compiling with Maven...'
+                sh 'mvn compile'
             }
         }
         stage('Test') {
             steps {
-                // Example test command
-                sh 'echo Running tests...'
-                // Add your actual test command here, for example:
-                // sh './gradlew test' or 'mvn test'
+                // Run tests using Maven
+                echo 'Running tests with Maven...'
+                sh 'mvn test'
             }
         }
         stage('Deploy') {
             steps {
                 // Example deploy command
-                sh 'echo Deploying...'
+                echo 'Deploying...'
                 // Add your actual deploy command here
             }
         }
