@@ -1,27 +1,24 @@
 pipeline {
     agent any
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git branch: 'ahmedamirbouteraa', url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git'
+                git branch: 'ahmedamirbouteraa', credentialsId: 'gitauth', url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git'
             }
         }
         stage('Build') {
             steps {
-                echo 'Building...'
-                // Add build steps here
+                // Your build steps here
             }
         }
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                // Add test steps here
+                // Your test steps here
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
-                // Add deployment steps here
+                // Your deploy steps here
             }
         }
     }
