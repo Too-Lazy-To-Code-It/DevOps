@@ -1,7 +1,10 @@
 spring:
   web:
     cors:
-      allowed-origins: http://192.168.1.37:3001
+      allowed-origins:
+        - http://192.168.1.37:3001
+        - http://192.168.8.104:3001
+        - http://localhost:3001
       allowed-methods: GET, POST, PUT, DELETE, OPTIONS
       allowed-headers: "*"
       allow-credentials: true
