@@ -59,9 +59,6 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
         return subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
     }
 
-    public List<Subscription> getall() {
-        return subscriptionRepository.findAll();
-    }
 
     @Override
     @Scheduled(cron = "*/30 * * * * *") /* Cron expression to run a job every 30 secondes */

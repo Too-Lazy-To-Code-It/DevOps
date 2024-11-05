@@ -31,10 +31,7 @@ public class SubscriptionRestController {
         return subscriptionServices.retrieveSubscriptionById(numSubscription);
     }
 
-    @GetMapping("/all")
-    public List<Subscription> getallsubsc(){
-        return subscriptionServices.getall();
-    }
+
     
     @Operation(description = "Retrieve Subscriptions by Type")
     @GetMapping("/all/{typeSub}")
