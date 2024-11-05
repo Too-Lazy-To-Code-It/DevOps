@@ -58,6 +58,11 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
     public List<Subscription> retrieveSubscriptionsByDates(LocalDate startDate, LocalDate endDate) {
         return subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
     }
+    
+    @Override
+     public List<Subscription> retrieveSubscriptionsAll() {
+        return subscriptionRepository.findAll();
+    }
 
 
     @Override
