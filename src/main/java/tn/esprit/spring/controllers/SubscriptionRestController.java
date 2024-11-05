@@ -33,7 +33,7 @@ public class SubscriptionRestController {
 
     @GetMapping("/all")
     public Subscription getall(){
-        return subscriptionServices.retrieveAllPistes();
+        return subscriptionServices.getall();
     }
     
     @Operation(description = "Retrieve Subscriptions by Type")
