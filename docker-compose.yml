@@ -19,8 +19,8 @@ services:
       timeout: 30s
 
   app:
-    image: fedichebbi/course_devops:latest
-    container_name: gestion-station-course-container
+    image: 2lazy2nameit/devops:latest
+    container_name: Gestion-Skier
     depends_on:
       mysql:
         condition: service_healthy
