@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
         DOCKER_IMAGE = 'mohamedrayen/sky_devops:2'
+        KUBECONFIG = '/path/to/kubeconfig' // Path to your Kubernetes config file on Jenkins
     }
 
     stages {
@@ -31,11 +32,6 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        /*stage('Test and Coverage') {
-            steps {
-                sh 'mvn test jacoco:report'
-            }
-        }*/
 
         stage('SonarQube Analysis and Jacoco') {
             steps {
@@ -57,7 +53,6 @@ pipeline {
             }
         }
 
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $DOCKER_IMAGE .'
@@ -74,9 +69,12 @@ pipeline {
             }
         }
 
-        stage('Docker Compose') {
+        stage('Kubernetes Deployment') {
             steps {
-                sh 'docker compose up -d'
+                script {
+                    // Make sure `kubectl` is installed and configured correctly on Jenkins
+                    sh 'kubectl apply -f k8s-config.yaml'
+                }
             }
         }
     }

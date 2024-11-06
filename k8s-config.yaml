@@ -1,0 +1,152 @@
+# MySQL Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  # Adjust storage size as needed
+
+---
+# MySQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: '0000'
+            - name: MYSQL_DATABASE
+              value: 'stationSki'
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-storage
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+
+---
+# MySQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql
+
+---
+# Spring Boot Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gestion-station-ski-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gestion-station-ski
+  template:
+    metadata:
+      labels:
+        app: gestion-station-ski
+    spec:
+      containers:
+        - name: gestion-station-ski-container
+          image: mohamedrayen/sky_devops:2  # Spring Boot application image
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: /api
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql-service:3306/stationSki?createDatabaseIfNotExist=true
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: '0000'
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+              value: org.hibernate.dialect.MySQL8Dialect
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: prometheus
+            - name: MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED
+              value: "true"
+            - name: MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED
+              value: "true"
+
+---
+# Spring Boot Application Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: gestion-station-ski-service
+spec:
+  type: NodePort
+  ports:
+    - port: 8082
+      targetPort: 8082
+      nodePort: 30002  # Adjust as needed
+  selector:
+    app: gestion-station-ski
+
+---
+# Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sky-frontend
+  template:
+    metadata:
+      labels:
+        app: sky-frontend
+    spec:
+      containers:
+        - name: sky-frontend
+          image: mohamedrayen/sky-front:3  # React frontend image
+          ports:
+            - containerPort: 3001
+
+---
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: NodePort
+  ports:
+    - port: 3001
+      targetPort: 3001
+      nodePort: 30001  # Adjust as needed
+  selector:
+    app: sky-frontend
