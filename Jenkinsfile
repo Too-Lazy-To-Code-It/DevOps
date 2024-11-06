@@ -37,5 +37,19 @@ pipeline {
                         sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=1'
                     }
                 }
+                stage('Docker Image Building') {
+                            steps {
+                                sh 'docker build -t $DOCKER_REPO .'
+                            }
+                        }
+                         stage('Docker Image push') {
+                                    steps {
+                                        script {
+                                            docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
+                                                sh 'docker push $DOCKER_IMAGE'
+                                            }
+                                        }
+                                    }
+                                }
     }
 }
