@@ -39,7 +39,7 @@ pipeline {
                 }
         stage('Docker Image Building') {
                     steps {
-                        echo 'DOcker Building $DOCKER_REPO'
+
                          sh 'docker build -t $DOCKER_REPO .'
                             }
                         }
