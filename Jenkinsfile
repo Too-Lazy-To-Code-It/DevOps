@@ -28,6 +28,13 @@ pipeline {
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                echo 'Running mvn test...'
+                sh 'mvn test'
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
