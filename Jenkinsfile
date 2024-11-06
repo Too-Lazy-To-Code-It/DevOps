@@ -4,6 +4,8 @@ pipeline {
     environment {
         SONAR_URL = "http://192.168.1.5:9000/"
         SONAR_LOGIN = "sqa_272bebdb05ad6099336b79cb658466ff98e9a626"  // Or you can store this securely as a Jenkins credential
+        NEXUS_URL = "http://192.168.1.5:8081/repository/maven-releases/"  // Replace with your Nexus URL
+        NEXUS_CREDENTIALS_ID = "nexus-credentials"  // Jenkins credentials ID for Nexus
     }
 
     stages {
@@ -14,17 +16,10 @@ pipeline {
             }
         }
 
-        stage('Maven Clean') {
+        stage('Maven Clean and Compile') {
             steps {
-                echo 'Running mvn clean...'
-                sh 'mvn clean'
-            }
-        }
-
-        stage('Maven Compile') {
-            steps {
-                echo 'Running mvn compile...'
-                sh 'mvn compile'
+                echo 'Running mvn clean compile...'
+                sh 'mvn clean compile'
             }
         }
 
@@ -48,20 +43,23 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Maven Deploy to Nexus') {
             steps {
-                echo 'Deploying...'
-                // Add your actual deploy command here
+                echo 'Deploying to Nexus using Maven deploy...'
+                withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+                    // Run the Maven deploy
+                    sh 'mvn deploy'
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'SonarQube analysis completed successfully.'
+            echo 'SonarQube analysis and Nexus deployment completed successfully.'
         }
         failure {
-            echo 'SonarQube analysis failed.'
+            echo 'SonarQube analysis or Nexus deployment failed.'
         }
     }
 }
