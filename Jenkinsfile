@@ -14,7 +14,7 @@ pipeline {
                     currentStage = 'Checkout GIT'
                 }
                 echo 'Pulling...'
-                git branch: 'fedibbi',
+                git branch: 'fedichebbi',
                     url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
                     credentialsId: 'github-log'
             }
@@ -56,7 +56,7 @@ pipeline {
                     currentStage = 'Deploy to Nexus'
                 }
                 echo 'Deploying to Nexus...'
-                sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
+                sh 'mvn deploy -Dnexus.login=${NEXUS_USERNAME} -Dnexus.password=${NEXUS_PASSWORD}'
             }
         }
 
