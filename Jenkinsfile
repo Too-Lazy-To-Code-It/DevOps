@@ -15,5 +15,11 @@ pipeline {
                 sh 'mvn compile'
             }
         }
+        stage('Run Test with mockio') {
+                    steps {
+                        sh 'mvn test'
+                    }
+                }
+
     }
 }
