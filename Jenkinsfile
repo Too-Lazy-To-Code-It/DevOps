@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONAR_URL = "http://192.168.5.1:9000/"
-        SONAR_LOGIN = "squ_564a9f21f42df9b0e8ea6a70b9aef6dfe2ca4ff7"  // Or you can store this securely as a Jenkins credential
+        SONAR_LOGIN = "sqa_272bebdb05ad6099336b79cb658466ff98e9a626"  // Or you can store this securely as a Jenkins credential
     }
 
     stages {
