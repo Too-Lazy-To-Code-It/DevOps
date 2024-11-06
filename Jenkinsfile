@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'
         DOCKER_IMAGE = 'fedichebbi/course_devops'
-        SLACK_WEBHOOK_URL = "${env.SLACK_WEBHOOK_URL}" // Ensure this is set as an environment variable
+        SLACK_WEBHOOK_URL = "${env.SLACK_WEBHOOK_URL}"
     }
 
     stages {
