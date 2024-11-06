@@ -11,7 +11,7 @@ RUN mkdir -p /app
 COPY pom.xml /app/pom.xml
 
 # Download the artifact into the /app directory
-RUN wget --user=admin --password=nexus -O /app/gestion-station-ski-1.0.jar http://10.0.2.15:8081/repository/maven-releases/tn/esprit/spring/gestion-station-ski/1.0/gestion-station-ski-1.0.jar
+RUN wget --user=admin --password=1 -O /app/gestion-station-ski-1.0.jar http://192.168.223.128:8081/repository/maven-releases/tn/esprit/spring/gestion-station-ski/1.0/gestion-station-ski-1.0.jar
 
 # Verify that the file was downloaded
 RUN ls -l /app/gestion-station-ski-1.0.jar /app/pom.xml
