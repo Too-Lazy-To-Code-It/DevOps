@@ -57,11 +57,13 @@
 
 	<build>
 		<plugins>
+			<!-- Spring Boot Maven Plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<excludes>
+						<!-- Exclude Lombok from the final package -->
 						<exclude>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
@@ -69,7 +71,9 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
+
 
 </project>

@@ -1,5 +1,11 @@
 pipeline {
     agent any
+
+    environment {
+        SONAR_URL = "http://192.168.5.1:9000/"
+        SONAR_LOGIN = "squ_564a9f21f42df9b0e8ea6a70b9aef6dfe2ca4ff7"  // Or you can store this securely as a Jenkins credential
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -26,9 +32,10 @@ pipeline {
             steps {
                 echo 'Running SonarQube analysis...'
                 script {
-
+                    // Ensure SonarQube environment is configured in Jenkins
                     withSonarQubeEnv('sonarqube') {
-                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.login=${squ_564a9f21f42df9b0e8ea6a70b9aef6dfe2ca4ff7}"
+                        // Run SonarQube analysis using Maven
+                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN}"
                     }
                 }
             }
@@ -39,6 +46,15 @@ pipeline {
                 echo 'Deploying...'
                 // Add your actual deploy command here
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'SonarQube analysis completed successfully.'
+        }
+        failure {
+            echo 'SonarQube analysis failed.'
         }
     }
 }
