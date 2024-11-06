@@ -52,7 +52,7 @@ public class SubscriptionRestController {
 
 
     @Operation(description = "Retrieve All Subscriptions")
-    @GetMapping("/all/subscriptions")
+    @GetMapping("/getall/subscriptions")
     public List<Subscription> getAllSubscription(){
         return subscriptionServices.retrieveSubscriptionsAll();
     }
