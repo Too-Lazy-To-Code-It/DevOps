@@ -20,6 +20,12 @@ pipeline {
                         sh 'mvn test'
                     }
                 }
-
+        stage('SonarQube Quality') {
+                       steps {
+                                withSonarQubeEnv('sonarQube') {
+                                    sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                                }
+                            }
+                        }
     }
 }
