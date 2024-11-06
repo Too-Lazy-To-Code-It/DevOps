@@ -15,14 +15,14 @@ pipeline {
                 sh 'mvn compile'
             }
         }
-        stage('Run Test with mockio') {
+        stage('Run Test with mockito') {
                     steps {
                         sh 'mvn test'
                     }
                 }
         stage('SonarQube Quality') {
                        steps {
-                                withSonarQubeEnv('sonarQube') {
+                                withSonarQubeEnv('sonarqube') {
                                     sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                                 }
                             }
