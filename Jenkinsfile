@@ -37,7 +37,7 @@ pipeline {
                     // Ensure SonarQube environment is configured in Jenkins
                     withSonarQubeEnv('sonarqube') {
                         // Run SonarQube analysis using Maven
-                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN} -X"
+                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN} "
                     }
                 }
             }
