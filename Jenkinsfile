@@ -14,7 +14,7 @@ pipeline {
                     currentStage = 'Checkout GIT'
                 }
                 echo 'Pulling...'
-                git branch: 'fedichebbi',
+                git branch: 'fedibbi',
                     url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
                     credentialsId: 'github-log'
             }
