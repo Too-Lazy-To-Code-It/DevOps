@@ -10,8 +10,11 @@ pipeline {
     stages {
         stage('Checkout GIT') {
             steps {
+                script {
+                    currentStage = 'Checkout GIT'
+                }
                 echo 'Pulling...'
-                git branch: 'fedibbi',
+                git branch: 'fedichebbi',
                     url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git',
                     credentialsId: 'github-log'
             }
@@ -19,12 +22,18 @@ pipeline {
 
         stage('Maven Compile') {
             steps {
+                script {
+                    currentStage = 'Maven Compile'
+                }
                 sh 'mvn compile'
             }
         }
 
         stage('Mockito Test') {
             steps {
+                script {
+                    currentStage = 'Mockito Test'
+                }
                 echo 'Running tests...'
                 sh 'mvn test'
             }
@@ -32,6 +41,9 @@ pipeline {
 
         stage('SonarQube / Jacoco') {
             steps {
+                script {
+                    currentStage = 'SonarQube / Jacoco'
+                }
                 withSonarQubeEnv('SonarQube') {
                     sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                 }
@@ -40,6 +52,9 @@ pipeline {
 
         stage('Deploy to Nexus') {
             steps {
+                script {
+                    currentStage = 'Deploy to Nexus'
+                }
                 echo 'Deploying to Nexus...'
                 sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
             }
@@ -47,12 +62,18 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
+                script {
+                    currentStage = 'Build Docker Image'
+                }
                 sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
+                script {
+                    currentStage = 'Push Docker Image'
+                }
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                         sh 'docker push $DOCKER_IMAGE'
@@ -63,6 +84,9 @@ pipeline {
 
         stage('Docker Compose with Monitoring') {
             steps {
+                script {
+                    currentStage = 'Docker Compose with Monitoring'
+                }
                 echo 'Starting application and monitoring services with Docker Compose...'
                 sh 'docker compose -f docker-compose.yml up -d'
             }
@@ -90,15 +114,13 @@ pipeline {
         }
         failure {
             script {
-                def currentStage = env.STAGE_NAME //
-                def errorMessage = "Something went wrong during the deployment process at the *${currentStage}* stage. Please check the Jenkins console output for more details. :warning:"
                 def message = """
                 {
                     "text": "❌ *Deployment Failed!* :x:",
                     "attachments": [
                         {
                             "color": "#ff0000",
-                            "text": "${errorMessage}\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
+                            "text": "Something went wrong during the *${currentStage}* stage. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
                         }
                     ]
                 }
@@ -108,6 +130,5 @@ pipeline {
                 """
             }
         }
-
     }
 }
