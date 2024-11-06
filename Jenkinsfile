@@ -46,14 +46,14 @@ pipeline {
                                     steps {
                                         script {
                                             docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                                                sh 'docker push $DOCKER_IMAGE'
+                                                sh 'docker push $DOCKER_REPO'
                                             }
                                         }
                                     }
                                 }
-                                 stage('Docker Compose with Monitoring') {
+                                 stage('Docker Compose Monitoring') {
                                             steps {
-                                                echo 'Starting application and monitoring services with Docker Compose...'
+                                                echo 'Application on starting and monitoring dcoker composing..'
                                                 sh 'docker compose -f docker-compose.yml up -d'
                                             }
                                         }
