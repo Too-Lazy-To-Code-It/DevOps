@@ -2,20 +2,20 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'snowyxd/alpine'  // Replace with your Docker image name
-        DOCKER_CREDENTIALS_ID = 'Docker-credentials'  // Jenkins credentials ID for Docker Hub
+        DOCKER_IMAGE = 'snowyxd/course_devops'
+        DOCKER_CREDENTIALS_ID = 'Docker-credentials'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'ahmedamirbouteraa', credentialsId: 'gitauth', url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git'
+                git branch: 'main', credentialsId: 'gitauth', url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git'
             }
         }
 
-        stage('Maven Clean and Compile') {
+        stage('Build with Maven') {
             steps {
-                echo 'Running mvn clean compile...'
+                echo 'Running Maven build...'
                 sh 'mvn clean compile'
             }
         }
@@ -39,10 +39,10 @@ pipeline {
 
     post {
         success {
-            echo 'Docker image built and pushed successfully.'
+            echo 'Pipeline completed successfully.'
         }
         failure {
-            echo 'Failed to build or push Docker image.'
+            echo 'Pipeline failed. Please check logs for errors.'
         }
     }
 }
