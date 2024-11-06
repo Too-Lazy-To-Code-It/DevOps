@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'snowyxd/course_devops'
-        DOCKER_CREDENTIALS_ID = 'Docker-credentials'
+        DOCKER_IMAGE = 'snowyxd/alpine'  // Docker image name
+        DOCKER_CREDENTIALS_ID = 'Docker-credentials'  // Jenkins credentials ID for Docker Hub
     }
 
     stages {
@@ -13,25 +13,29 @@ pipeline {
             }
         }
 
-        stage('Build with Maven') {
+        stage('Maven Clean and Compile') {
             steps {
-                echo 'Running Maven build...'
+                echo 'Running mvn clean compile...'
                 sh 'mvn clean compile'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                script {
+                    echo 'Building Docker image...'
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                echo 'Pushing Docker image to Docker Hub...'
-                docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
-                    sh "docker push ${DOCKER_IMAGE}"
+                script {
+                    echo 'Pushing Docker image to Docker Hub...'
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                        sh "docker push ${DOCKER_IMAGE}"
+                    }
                 }
             }
         }
