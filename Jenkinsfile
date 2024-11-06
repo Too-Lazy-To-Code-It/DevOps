@@ -5,7 +5,7 @@ pipeline {
         SONAR_URL = "http://192.168.1.5:9000/"
         SONAR_LOGIN = "sqa_272bebdb05ad6099336b79cb658466ff98e9a626"  // Or you can store this securely as a Jenkins credential
         NEXUS_URL = "http://192.168.1.5:8081/repository/maven-releases/"  // Replace with your Nexus URL
-        NEXUS_CREDENTIALS_ID = "nexus-credentials"  // Jenkins credentials ID for Nexus
+        NEXUS_CREDENTIALS_ID = "admin"  // Jenkins credentials ID for Nexus
     }
 
     stages {
