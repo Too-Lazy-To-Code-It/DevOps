@@ -22,11 +22,13 @@ public class SubscriptionRestController {
 
     @Operation(description = "Add Subscription ")
     @PostMapping("/add")
+    @CrossOrigin
     public Subscription addSubscription(@RequestBody Subscription subscription){
         return  subscriptionServices.addSubscription(subscription);
     }
     @Operation(description = "Retrieve Subscription by Id")
     @GetMapping("/get/{id-subscription}")
+    @CrossOrigin
     public Subscription getById(@PathVariable("id-subscription") Long numSubscription){
         return subscriptionServices.retrieveSubscriptionById(numSubscription);
     }
@@ -35,16 +37,19 @@ public class SubscriptionRestController {
     
     @Operation(description = "Retrieve Subscriptions by Type")
     @GetMapping("/all/{typeSub}")
+    @CrossOrigin
     public Set<Subscription> getSubscriptionsByType(@PathVariable("typeSub")TypeSubscription typeSubscription){
         return subscriptionServices.getSubscriptionByType(typeSubscription);
     }
     @Operation(description = "Update Subscription ")
     @PutMapping("/update")
+    @CrossOrigin
     public Subscription updateSubscription(@RequestBody Subscription subscription){
         return  subscriptionServices.updateSubscription(subscription);
     }
     @Operation(description = "Retrieve Subscriptions created between two dates")
     @GetMapping("/all/{date1}/{date2}")
+    @CrossOrigin
     public List<Subscription> getSubscriptionsByDates(@PathVariable("date1") LocalDate startDate,
                                                       @PathVariable("date2") LocalDate endDate){
         return subscriptionServices.retrieveSubscriptionsByDates(startDate, endDate);
@@ -53,6 +58,7 @@ public class SubscriptionRestController {
 
     @Operation(description = "Retrieve All Subscriptions")
     @GetMapping("/all/subscriptions")
+    @CrossOrigin
     public List<Subscription> getAllSubscription(){
         return subscriptionServices.retrieveSubscriptionsAll();
     }
