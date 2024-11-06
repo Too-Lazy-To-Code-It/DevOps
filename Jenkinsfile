@@ -7,17 +7,35 @@ pipeline {
                 git branch: 'ahmedamirbouteraa', credentialsId: 'gitauth', url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git'
             }
         }
-        stage('Build') {
+
+        stage('Maven Clean') {
             steps {
-                // Maven compile command
-                echo 'Compiling with Maven...'
+                echo 'Running mvn clean...'
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Maven Compile') {
+            steps {
+                echo 'Running mvn compile...'
                 sh 'mvn compile'
             }
         }
-    
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+                script {
+
+                    withSonarQubeEnv('sonarqube') {
+                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.login=${SONAR_TOKEN}"
+                    }
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
-                // Example deploy command
                 echo 'Deploying...'
                 // Add your actual deploy command here
             }
