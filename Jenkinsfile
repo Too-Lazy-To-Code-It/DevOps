@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+            DOCKER_NAME = 'DOCKER'
+            DOCKER_REPO = '2lazy2nameit/devops'
+        }
     stages {
         stage('Checkout GIT') {
             steps {
