@@ -27,5 +27,11 @@ pipeline {
                                 }
                             }
                         }
+        stage('Nexus Deploying') {
+                    steps {
+                        echo 'Deploying Nexus.....Be Patient'
+                        sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=1'
+                    }
+                }
     }
 }
