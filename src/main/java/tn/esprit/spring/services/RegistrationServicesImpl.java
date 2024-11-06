@@ -3,7 +3,10 @@ package tn.esprit.spring.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import tn.esprit.spring.entities.*;
+import tn.esprit.spring.entities.Course;
+import tn.esprit.spring.entities.Registration;
+import tn.esprit.spring.entities.Skier;
+import tn.esprit.spring.entities.Support;
 import tn.esprit.spring.repositories.ICourseRepository;
 import tn.esprit.spring.repositories.IRegistrationRepository;
 import tn.esprit.spring.repositories.ISkierRepository;
@@ -12,10 +15,11 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+
 @Slf4j
 @AllArgsConstructor
 @Service
-public class RegistrationServicesImpl implements  IRegistrationServices{
+public class RegistrationServicesImpl implements IRegistrationServices {
 
     private IRegistrationRepository registrationRepository;
     private ISkierRepository skierRepository;
@@ -47,7 +51,7 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
             return null;
         }
 
-        if(registrationRepository.countDistinctByNumWeekAndSkier_NumSkierAndCourse_NumCourse(registration.getNumWeek(), skier.getNumSkier(), course.getNumCourse()) >=1){
+        if (registrationRepository.countDistinctByNumWeekAndSkier_NumSkierAndCourse_NumCourse(registration.getNumWeek(), skier.getNumSkier(), course.getNumCourse()) >= 1) {
             log.info("Sorry, you're already register to this course of the week :" + registration.getNumWeek());
             return null;
         }
@@ -70,8 +74,7 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
                         log.info("Full Course ! Please choose another week to register !");
                         return null;
                     }
-                }
-                else{
+                } else {
                     log.info("Sorry, your age doesn't allow you to register for this course ! \n Try to Register to a Collective Adult Course...");
                 }
                 break;
@@ -92,7 +95,8 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
         return registration;
 
     }
-    private Registration assignRegistration (Registration registration, Skier skier, Course course){
+
+    private Registration assignRegistration(Registration registration, Skier skier, Course course) {
         registration.setSkier(skier);
         registration.setCourse(course);
         return registrationRepository.save(registration);

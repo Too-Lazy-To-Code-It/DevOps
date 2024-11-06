@@ -1,14 +1,18 @@
 package tn.esprit.spring.services;
 
-import tn.esprit.spring.entities.*;
+import tn.esprit.spring.entities.Registration;
+import tn.esprit.spring.entities.Support;
 
 import java.util.List;
 
 public interface IRegistrationServices {
 
-	Registration addRegistrationAndAssignToSkier(Registration registration, Long numSkier);
-	Registration assignRegistrationToCourse(Long numRegistration, Long numCourse);
-	Registration addRegistrationAndAssignToSkierAndCourse(Registration registration, Long numSkieur, Long numCours);
-	List<Integer> numWeeksCourseOfInstructorBySupport(Long numInstructor, Support support);
+    Registration addRegistrationAndAssignToSkier(Registration registration, Long numSkier);
+
+    Registration assignRegistrationToCourse(Long numRegistration, Long numCourse);
+
+    Registration addRegistrationAndAssignToSkierAndCourse(Registration registration, Long numSkieur, Long numCours);
+
+    List<Integer> numWeeksCourseOfInstructorBySupport(Long numInstructor, Support support);
 }
 
