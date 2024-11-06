@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        SONAR_URL = "http://192.168.1.5:9000/"
-        SONAR_LOGIN = "sqa_272bebdb05ad6099336b79cb658466ff98e9a626"  // Or you can store this securely as a Jenkins credential
+        SONAR_URL = "http://192.168.1.5:9000/"  // Replace with your SonarQube URL
+        SONAR_LOGIN = "sqa_272bebdb05ad6099336b79cb658466ff98e9a626"  // Replace with your SonarQube token or store it securely in Jenkins credentials
         NEXUS_URL = "http://192.168.1.5:8081/repository/maven-releases/"  // Replace with your Nexus URL
         NEXUS_CREDENTIALS_ID = "deploymentRepo"  // Jenkins credentials ID for Nexus
     }
@@ -37,7 +37,7 @@ pipeline {
                     // Ensure SonarQube environment is configured in Jenkins
                     withSonarQubeEnv('sonarqube') {
                         // Run SonarQube analysis using Maven
-                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN} "
+                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN}"
                     }
                 }
             }
