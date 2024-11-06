@@ -28,7 +28,7 @@ pipeline {
                 script {
 
                     withSonarQubeEnv('sonarqube') {
-                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.login=${SONAR_TOKEN}"
+                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.login=${squ_564a9f21f42df9b0e8ea6a70b9aef6dfe2ca4ff7}"
                     }
                 }
             }
