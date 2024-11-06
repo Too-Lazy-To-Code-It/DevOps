@@ -2,16 +2,13 @@ pipeline {
     agent any
 
     environment {
-        SONAR_URL = "http://192.168.1.5:9000/"  // Replace with your SonarQube URL
-        SONAR_LOGIN = "sqa_272bebdb05ad6099336b79cb658466ff98e9a626"  // Replace with your SonarQube token or store it securely in Jenkins credentials
-        NEXUS_URL = "http://192.168.1.5:8081/repository/maven-releases/"  // Replace with your Nexus URL
-        NEXUS_CREDENTIALS_ID = "deploymentRepo"  // Jenkins credentials ID for Nexus
+        DOCKER_IMAGE = 'snowyxd/alpine'  // Replace with your Docker image name
+        DOCKER_CREDENTIALS_ID = 'Docker-credentials'  // Jenkins credentials ID for Docker Hub
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from Git
                 git branch: 'ahmedamirbouteraa', credentialsId: 'gitauth', url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git'
             }
         }
@@ -23,32 +20,18 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Running mvn test...'
-                sh 'mvn test'
+                echo 'Building Docker image...'
+                sh "docker build -t ${DOCKER_IMAGE} ."
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Push Docker Image') {
             steps {
-                echo 'Running SonarQube analysis...'
-                script {
-                    // Ensure SonarQube environment is configured in Jenkins
-                    withSonarQubeEnv('sonarqube') {
-                        // Run SonarQube analysis using Maven
-                        sh "mvn sonar:sonar -Dsonar.projectKey=my_project_key -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN}"
-                    }
-                }
-            }
-        }
-
-        stage('Maven Deploy to Nexus') {
-            steps {
-                echo 'Deploying to Nexus using Maven deploy...'
-                withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-                    // Run the Maven deploy
-                    sh 'mvn deploy'
+                echo 'Pushing Docker image to Docker Hub...'
+                docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                    sh "docker push ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -56,10 +39,10 @@ pipeline {
 
     post {
         success {
-            echo 'SonarQube analysis and Nexus deployment completed successfully.'
+            echo 'Docker image built and pushed successfully.'
         }
         failure {
-            echo 'SonarQube analysis or Nexus deployment failed.'
+            echo 'Failed to build or push Docker image.'
         }
     }
 }
