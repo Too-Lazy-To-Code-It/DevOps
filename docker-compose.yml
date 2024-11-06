@@ -24,7 +24,7 @@ services:
 #    build:
 #      context: .  # Path to your Dockerfile
 #      dockerfile: Dockerfile  # Specify the Dockerfile if it's named differently
-    image: mohamedrayen/sky_devops:1
+    image: mohamedrayen/sky_devops:2
     container_name: gestion-station-ski-container
     depends_on:
       mysql:

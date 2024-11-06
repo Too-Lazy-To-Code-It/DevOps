@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
-        DOCKER_IMAGE = 'mohamedrayen/sky_devops:1'
+        DOCKER_IMAGE = 'mohamedrayen/sky_devops:2'
     }
 
     stages {
