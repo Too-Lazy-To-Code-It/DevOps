@@ -90,13 +90,15 @@ pipeline {
         }
         failure {
             script {
+                def currentStage = env.STAGE_NAME //
+                def errorMessage = "Something went wrong during the deployment process at the *${currentStage}* stage. Please check the Jenkins console output for more details. :warning:"
                 def message = """
                 {
                     "text": "❌ *Deployment Failed!* :x:",
                     "attachments": [
                         {
                             "color": "#ff0000",
-                            "text": "Something went wrong during the deployment process. Please check the Jenkins console output for more details. :warning:\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
+                            "text": "${errorMessage}\n*Summary:*\n- Docker Image: $DOCKER_IMAGE\n- Branch: fedichebbi\n\n*Immediate action required!*"
                         }
                     ]
                 }
@@ -106,5 +108,6 @@ pipeline {
                 """
             }
         }
+
     }
 }
