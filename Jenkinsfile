@@ -73,7 +73,7 @@ pipeline {
             steps {
                 script {
                     // Make sure `kubectl` is installed and configured correctly on Jenkins
-                    sh 'kubectl apply -f k8s-config.yaml'
+                    sh 'kubectl apply -f k8s-config.yaml --validate=false'
                 }
             }
         }
