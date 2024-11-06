@@ -72,9 +72,11 @@
 				</configuration>
 			</plugin>
 
+			<!-- SonarQube Maven Plugin -->
 
 		</plugins>
 	</build>
+
 
 
 </project>
