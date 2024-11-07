@@ -168,6 +168,7 @@ pipeline {
                                                                        stage('Trivy gaming') {
                                                                             steps {
                                                                                 echo "Scanning Docker image with Trivy..."
+                                                                                sh "trivy clean --java-db"
                                                                                 sh 'trivy image --timeout 20m --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html 2lazy2nameit/devops'
                                                                             }
                                                                         }
