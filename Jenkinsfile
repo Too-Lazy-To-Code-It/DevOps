@@ -20,8 +20,6 @@ pipeline {
             }
         }
 
-
-
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
@@ -32,14 +30,35 @@ pipeline {
                 }
             }
         }
-           stage('Deploy to Nexus') {
-                     steps {
-                         echo 'Deploying to Nexus...'
-                         sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
-                     }
-                 }
 
+        stage('Deploy to Nexus') {
+            steps {
+                echo 'Deploying to Nexus...'
+                sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
+            }
+        }
 
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                script {
+                    // Build the Docker image using the provided Dockerfile
+                    sh 'docker build -t $DOCKER_IMAGE .'
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                echo 'Pushing Docker image to Docker Hub...'
+                script {
+                    // Push the Docker image to Docker Hub
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        sh 'docker push $DOCKER_IMAGE'
+                    }
+                }
+            }
+        }
     }
 
     post {
