@@ -20,16 +20,26 @@ pipeline {
             }
         }
 
-        /*stage('SonarQube Analysis') {
+        stage('Run Unit Tests with Mockito') {
+            steps {
+                echo 'Running unit tests with Mockito...'
+                script {
+                    // Run Maven test phase to execute unit tests (including Mockito tests)
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
                 script {
                     withSonarQubeEnv('SonarQube') {
-                        sh 'mvn clean verify sonar:sonar'
+                        sh 'mvn sonar:sonar'
                     }
                 }
             }
-        }*/
+        }
 
         stage('Deploy to Nexus') {
             steps {
