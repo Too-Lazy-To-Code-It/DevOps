@@ -69,7 +69,7 @@ pipeline {
             }
         }
 
-        stage('Kubernetes Test => get nodes') {
+        stage('Kubernetes Test') {
             steps {
                 script {
                     sh 'kubectl get nodes '
