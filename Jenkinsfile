@@ -27,7 +27,8 @@ pipeline {
                               currentStage = 'SonarQube / Jacoco'
                           }
                           withSonarQubeEnv('SonarQube') {
-                              sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                              sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+'
                           }
                       }
                   }
