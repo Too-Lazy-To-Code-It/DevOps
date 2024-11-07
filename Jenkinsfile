@@ -221,7 +221,7 @@ pipeline {
                     from: 'jenkins@example.com',
                     replyTo: 'jenkins@example.com',
                     mimeType: 'text/html',
-                   attachmentsPattern: 'trivy-imageesprit-report.html,index.html,dependency-check-report.xml'
+                   attachmentsPattern: 'index.html,dependency-check-report.xml'
 
                 )
             }
