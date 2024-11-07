@@ -21,17 +21,18 @@ pipeline {
         }
 
 
-        stage('JaCoCo Test Coverage and SonarQube Analysis') {
-            steps {
-                echo 'Running JaCoCo for code coverage and SonarQube analysis...'
-                script {
-                    // Run SonarQube analysis and JaCoCo test coverage
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'mvn clean verify sonar:sonar'
-                    }
-                }
-            }
-        }
+      stage('JaCoCo Test Coverage and SonarQube Analysis') {
+       steps {
+           echo 'Running JaCoCo for code coverage and SonarQube analysis...'
+           script {
+               // Run SonarQube analysis and JaCoCo test coverage
+               withSonarQubeEnv('SonarQube') {
+                   sh 'mvn clean verify sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+               }
+           }
+       }
+      }
+
     }
 
     post {
