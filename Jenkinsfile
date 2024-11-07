@@ -43,7 +43,7 @@ pipeline {
                 echo 'Building Docker image...'
                 script {
                     // Build the Docker image using the provided Dockerfile
-                    sh 'docker build -t $DOCKER_IMAGE .'
+                    sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
@@ -54,7 +54,7 @@ pipeline {
                 script {
                     // Push the Docker image to Docker Hub
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        sh 'docker push $DOCKER_IMAGE'
+                        sh "docker push ${DOCKER_IMAGE}"
                     }
                 }
             }
