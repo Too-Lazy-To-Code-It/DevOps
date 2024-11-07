@@ -14,7 +14,7 @@ services:
   app-timesheet:
     depends_on:
       - mysqldb
-    image: moenesgueni559/devops_project:1.0.0
+    image: moenesgueni559/gestion-station-ski-1.0
     restart: on-failure
     ports:
       - 8089:8089
