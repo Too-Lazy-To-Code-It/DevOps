@@ -192,7 +192,7 @@ pipeline {
 
 
     }
-    post {
+  /*  post {
     always {
         script {
             def jobName = env.JOB_NAME
@@ -226,5 +226,5 @@ pipeline {
             )
         }
     }
-}
+}*/
 }
