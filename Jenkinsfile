@@ -179,7 +179,7 @@ pipeline {
                                                     steps {
                                                         echo "Scanning Docker image with Trivy..."
                                                         sh "trivy clean --java-db"
-                                                        sh "trivy image --timeout 20m --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html $DOCKER_REPO-app:1.1.${env.BUILD_NUMBER}"
+                                                        sh 'trivy image --timeout 20m --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html $DOCKER_REPO'
                                                     }
                                                 }
 
