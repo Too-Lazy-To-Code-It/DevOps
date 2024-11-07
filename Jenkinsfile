@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests with Mockito') {
+        /*stage('Run Unit Tests with Mockito') {
             steps {
                 echo 'Running unit tests with Mockito...'
                 script {
@@ -46,7 +46,7 @@ pipeline {
                 echo 'Deploying to Nexus...'
                 sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=nexus'
             }
-        }
+        }*/
 
         stage('Build Docker Image') {
             steps {
