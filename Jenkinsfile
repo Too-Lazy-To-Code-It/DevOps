@@ -20,35 +20,7 @@ pipeline {
             }
         }
 
-        stage('Build the JAR') {
-            steps {
-                echo 'Building the JAR file using Maven...'
-                sh 'mvn package'  // Ensure the JAR file is created in target/
-            }
-        }
 
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker image for Spring Boot application...'
-                script {
-                    // Verify the JAR file exists
-                    sh 'ls -l target/'
-
-                    // Build the Docker image
-                    sh 'docker build -t $DOCKER_IMAGE .'
-                }
-            }
-        }
-
-        stage('Docker Compose Up') {
-            steps {
-                echo 'Starting Docker Compose with Spring Boot and MySQL...'
-                script {
-                    // Run Docker Compose to start both Spring Boot app and MySQL container
-                    sh 'docker-compose -f docker-compose.yml up -d'
-                }
-            }
-        }
 
         stage('SonarQube Analysis') {
             steps {
@@ -60,27 +32,16 @@ pipeline {
                 }
             }
         }
-
-        stage('Push Docker Image to Docker Hub') {
-            steps {
-                script {
-                    echo 'Pushing Docker image to Docker Hub...'
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        sh 'docker push $DOCKER_IMAGE'
+            stage('Deploy to Nexus') {
+                    steps {
+                        echo 'Deploying to Nexus repository...'
+                        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+                            sh 'mvn deploy -Dnexus.username=admin -Dnexus.password=nexus'
+                        }
                     }
                 }
-            }
-        }
 
-        stage('Tear Down Docker Compose') {
-            steps {
-                echo 'Tearing down Docker Compose environment...'
-                script {
-                    // Shut down the Docker Compose services
-                    sh 'docker-compose down'
-                }
-            }
-        }
+
     }
 
     post {
