@@ -69,12 +69,25 @@ pipeline {
             }
         }
 
-        stage('Kubernetes Test') {
+        stage('Setup ClusterRoleBinding') {
             steps {
                 script {
-                    sh 'kubectl get nodes '
+                    sh 'kubectl apply -f jenkins-clusterrolebinding.yaml'
                 }
             }
         }
+
+        stage('Kubernetes Test') {
+            environment {
+                KUBECONFIG = '~/.kube/config'
+            }
+            steps {
+                script {
+                    sh 'kubectl get nodes'
+                }
+            }
+        }
+
+
     }
 }
