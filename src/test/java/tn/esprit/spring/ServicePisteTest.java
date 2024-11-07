@@ -33,17 +33,18 @@ class PisteServicesImplTest {
 	@Test
 	void testRetrieveAllPistes() {
 		// Arrange
-		Piste piste1 = new Piste(1L, "Green Trail", Color.GREEN, 200, 15, null);
-		Piste piste2 = new Piste(2L, "Blue Trail", Color.BLUE, 300, 20, null);
-		when(pisteRepository.findAll()).thenReturn(Arrays.asList(piste1, piste2));
+		List<Piste> mockPistes = Arrays.asList(
+				new Piste(1L, "Green Trail", Color.GREEN, 200, 15, null),
+				new Piste(2L, "Blue Trail", Color.BLUE, 300, 20, null)
+		);
+		when(pisteRepository.findAll()).thenReturn(mockPistes);
 
 		// Act
 		List<Piste> pistes = pisteServices.retrieveAllPistes();
 
 		// Assert
-		assertNotNull(pistes);
-		assertEquals(2, pistes.size());
-		verify(pisteRepository, times(1)).findAll();
+		assertEquals(mockPistes, pistes);
+		verify(pisteRepository).findAll();
 	}
 
 	@Test
@@ -56,9 +57,8 @@ class PisteServicesImplTest {
 		Piste savedPiste = pisteServices.addPiste(piste);
 
 		// Assert
-		assertNotNull(savedPiste);
-		assertEquals(piste.getNumPiste(), savedPiste.getNumPiste());
-		verify(pisteRepository, times(1)).save(piste);
+		assertEquals(piste, savedPiste);
+		verify(pisteRepository).save(piste);
 	}
 
 	@Test
@@ -67,21 +67,20 @@ class PisteServicesImplTest {
 		pisteServices.removePiste(1L);
 
 		// Assert
-		verify(pisteRepository, times(1)).deleteById(1L);
+		verify(pisteRepository).deleteById(1L);
 	}
 
 	@Test
 	void testRetrievePiste() {
 		// Arrange
-		Piste piste = new Piste(1L, "Black Trail", Color.BLACK, 400, 35, null);
-		when(pisteRepository.findById(1L)).thenReturn(Optional.of(piste));
+		Piste mockPiste = new Piste(1L, "Black Trail", Color.BLACK, 400, 35, null);
+		when(pisteRepository.findById(1L)).thenReturn(Optional.of(mockPiste));
 
 		// Act
 		Piste retrievedPiste = pisteServices.retrievePiste(1L);
 
 		// Assert
-		assertNotNull(retrievedPiste);
-		assertEquals("Black Trail", retrievedPiste.getNamePiste());
-		verify(pisteRepository, times(1)).findById(1L);
+		assertEquals(mockPiste, retrievedPiste);
+		verify(pisteRepository).findById(1L);
 	}
 }
