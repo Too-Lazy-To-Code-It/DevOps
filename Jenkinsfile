@@ -7,7 +7,7 @@ pipeline {
     }
 
     stages {
-        stage('Checkout GIT') {
+        stage('GIT') {
             steps {
                 echo 'Pulling...'
                 git branch: 'Farouk',
@@ -22,14 +22,14 @@ pipeline {
             }
         }
 
-        stage('Mockito Test') {
+        stage('Test Unitaire Mockito') {
             steps {
-                echo 'Running tests...'
+                echo 'Starting tests...'
                 sh 'mvn test'
             }
         }
 
-        stage('SonarQube / Jacoco') {
+        stage('SonarQube with coverage') {
             steps {
                 withSonarQubeEnv('sonar') {
                     sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
@@ -37,20 +37,20 @@ pipeline {
             }
         }
 
-        stage('Deploy to Nexus') {
+        stage('Nexus Deploying') {
             steps {
                 echo 'Deploying to Nexus...'
                 sh 'mvn deploy -Dnexus.login=admin -Dnexus.password=Nexus'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Docker Building Image') {
             steps {
                 sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Docker Pushing Image') {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
@@ -60,9 +60,9 @@ pipeline {
             }
         }
 
-        stage('Docker Compose') {
+        stage('Docker Up') {
             steps {
-                echo 'Starting application and monitoring services with Docker Compose...'
+                echo 'Starting application with Docker Compose...'
                 sh 'docker compose -f docker-compose.yml up -d'
             }
         }
