@@ -19,7 +19,7 @@ services:
       timeout: 30s
 
   app:
-    image: faroukdaadaa/instructor_devops:latest
+    image: snowyxd/devops_gamix:latest
     container_name: gestion-station-course-container
     depends_on:
       mysql:
@@ -32,7 +32,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: '0000'
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-  
+
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
     restart: on-failure
     logging:
