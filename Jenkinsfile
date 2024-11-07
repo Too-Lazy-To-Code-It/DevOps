@@ -20,11 +20,21 @@ pipeline {
             }
         }
 
+        stage('Build the JAR') {
+            steps {
+                echo 'Building the JAR file using Maven...'
+                sh 'mvn package'  // Ensure the JAR file is created in target/
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image for Spring Boot application...'
                 script {
-                    // Build the Spring Boot Docker image
+                    // Verify the JAR file exists
+                    sh 'ls -l target/'
+
+                    // Build the Docker image
                     sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
