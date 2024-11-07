@@ -13,25 +13,23 @@ pipeline {
             }
         }
 
-
-
         stage('Maven Clean and Compile') {
             steps {
                 echo 'Running mvn clean compile...'
                 sh 'mvn clean compile'
             }
         }
-               stage('SonarQube / Jacoco') {
-                      steps {
-                          script {
-                              currentStage = 'SonarQube / Jacoco'
-                          }
-                          withSonarQubeEnv('SonarQube') {
-                              sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
-'
-                          }
-                      }
-                  }
+
+        stage('SonarQube / Jacoco') {
+            steps {
+                script {
+                    currentStage = 'SonarQube / Jacoco'
+                }
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                }
+            }
+        }
     }
 
     post {
