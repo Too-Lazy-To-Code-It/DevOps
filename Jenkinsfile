@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'snowyxd/devops_gamix'  // Docker image name (change this if needed)
+        DOCKER_IMAGE = 'snowyxd/devops_gamix'  // Docker image name
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'  // Jenkins credentials ID for Docker Hub
     }
 
@@ -10,13 +10,6 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'ahmedamirbouteraa', credentialsId: 'gitauth', url: 'https://github.com/Too-Lazy-To-Code-It/DevOps.git'
-            }
-        }
-
-        stage('Maven Clean and Compile') {
-            steps {
-                echo 'Running mvn clean compile...'
-                sh 'mvn clean compile'
             }
         }
 
@@ -32,9 +25,9 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    echo 'Logging in to Docker Hub...'
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    echo 'Logging into Docker Hub...'
+                    withCredentials([usernamePassword(credentialsId: "$DOCKER_CREDENTIALS_ID", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     }
                 }
             }
@@ -46,6 +39,13 @@ pipeline {
                     echo 'Pushing Docker image to Docker Hub...'
                     sh 'docker push $DOCKER_IMAGE'
                 }
+            }
+        }
+
+        stage('Maven Clean and Compile') {
+            steps {
+                echo 'Running mvn clean compile...'
+                sh 'mvn clean compile'
             }
         }
     }
