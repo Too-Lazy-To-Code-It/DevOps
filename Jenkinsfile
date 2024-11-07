@@ -69,27 +69,24 @@ pipeline {
             }
         }
 
-        stage('Setup ClusterRoleBinding') {
-            steps {
-                script {
-                    sh 'ls -l'
-                    sh 'pwd'
-                    sh 'cd ..'
-                    sh 'ls -l'
-                }
-            }
-        }
+       stage('Setup ClusterRoleBinding') {
+                   steps {
+                       script {
+                           sh 'kubectl apply -f jenkins-clusterrolebinding.yaml' // Ensure file is in workspace or use full path
+                       }
+                   }
+               }
 
-        stage('Kubernetes Test') {
-            environment {
-                KUBECONFIG = '~/.kube/config'
-            }
-            steps {
-                script {
-                    sh 'kubectl get nodes'
-                }
-            }
-        }
+               stage('Kubernetes Test') {
+                   environment {
+                       KUBECONFIG = '/home/rayen/.kube/config' // Absolute path here as well
+                   }
+                   steps {
+                       script {
+                           sh 'kubectl get nodes'
+                       }
+                   }
+               }
 
 
     }
