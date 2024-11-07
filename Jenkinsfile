@@ -72,6 +72,7 @@ pipeline {
         stage('Setup ClusterRoleBinding') {
             steps {
                 script {
+                    sh 'ls -l'
                     sh 'kubectl apply -f jenkins-clusterrolebinding.yaml'
                 }
             }
