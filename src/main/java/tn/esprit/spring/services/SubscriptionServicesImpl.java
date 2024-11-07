@@ -70,19 +70,17 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
     }
 
    // @Scheduled(cron = "* 0 9 1 * *") /* Cron expression to run a job every month at 9am */
-   @Scheduled(cron = "*/30 * * * * *") // Runs every 30 seconds for testing
-   public void showMonthlyRecurringRevenue() {
-       // Retrieve values, defaulting to 0.0f if null
-       Float monthlyRevenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.MONTHLY);
-       Float semestrielRevenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.SEMESTRIEL);
-       Float annualRevenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.ANNUAL);
+    @Scheduled(cron = "*/30 * * * * *") /* Cron expression to run a job every 30 secondes */
+    public void showMonthlyRecurringRevenue() {
+        Float monthlyRevenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.MONTHLY);
+        Float semestrielRevenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.SEMESTRIEL);
+        Float annualRevenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.ANNUAL);
 
-       // Use 0.0f as default if any of these are null
-       Float revenue = (monthlyRevenue != null ? monthlyRevenue : 0.0f)
-               + (semestrielRevenue != null ? semestrielRevenue / 6 : 0.0f)
-               + (annualRevenue != null ? annualRevenue / 12 : 0.0f);
+        Float revenue = (monthlyRevenue != null ? monthlyRevenue : 0) +
+                (semestrielRevenue != null ? semestrielRevenue / 6 : 0) +
+                (annualRevenue != null ? annualRevenue / 12 : 0);
 
-       log.info("Monthly Revenue = " + revenue);
-   }
+        log.info("Monthly Revenue = " + revenue);
 
+    }
 }
