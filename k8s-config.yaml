@@ -1,4 +1,5 @@
-# MySQL Persistent Volume Claim
+---
+# PersistentVolumeClaim for MySQL data
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -8,19 +9,19 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi  # Adjust storage size as needed
+      storage: 1Gi
 
 ---
 # MySQL Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment
+  name: mysql
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: mysql
+  replicas: 1
   template:
     metadata:
       labels:
@@ -31,14 +32,36 @@ spec:
           image: mysql:latest
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: '0000'
+              value: "0000"
             - name: MYSQL_DATABASE
-              value: 'stationSki'
+              value: "stationSki"
+            - name: MYSQL_INITDB_SKIP_TZINFO
+              value: "yes"
+
+
           ports:
             - containerPort: 3306
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql-storage
+          livenessProbe:
+            exec:
+              command:
+                - "mysqladmin"
+                - "ping"
+                - "-h"
+                - "localhost"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - "mysqladmin"
+                - "ping"
+                - "-h"
+                - "localhost"
+            initialDelaySeconds: 5
+            periodSeconds: 10
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
@@ -49,79 +72,84 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-service
+  name: mysql
 spec:
-  type: ClusterIP
   ports:
     - port: 3306
       targetPort: 3306
   selector:
     app: mysql
+  clusterIP: None  # Headless service for internal access
 
 ---
-# Spring Boot Application Deployment
+# App Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gestion-station-ski-deployment
+  name: gestion-station-ski-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: gestion-station-ski
+      app: gestion-station-ski-app
   template:
     metadata:
       labels:
-        app: gestion-station-ski
+        app: gestion-station-ski-app
     spec:
       containers:
-        - name: gestion-station-ski-container
-          image: mohamedrayen/sky_devops:2  # Spring Boot application image
-          ports:
-            - containerPort: 8082
+        - name: app
+          image: mohamedrayen/sky_devops:2
           env:
             - name: SERVER_SERVLET_CONTEXT_PATH
-              value: /api
+              value: "/api"
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql-service:3306/stationSki?createDatabaseIfNotExist=true
+              value: "jdbc:mysql://mysql:3306/stationSki?createDatabaseIfNotExist=true"
             - name: SPRING_DATASOURCE_USERNAME
-              value: root
+              value: "root"
             - name: SPRING_DATASOURCE_PASSWORD
-              value: '0000'
+              value: "0000"
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
+              value: "update"
             - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
-              value: org.hibernate.dialect.MySQL8Dialect
+              value: "org.hibernate.dialect.MySQL8Dialect"
             - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
-              value: prometheus
+              value: "prometheus"
             - name: MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED
               value: "true"
             - name: MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED
               value: "true"
+          ports:
+            - containerPort: 8082
+          readinessProbe:
+            httpGet:
+              path: /api/piste/all
+              port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 10
 
 ---
-# Spring Boot Application Service
+# App Service
 apiVersion: v1
 kind: Service
 metadata:
   name: gestion-station-ski-service
 spec:
-  type: NodePort
   ports:
     - port: 8082
       targetPort: 8082
-      nodePort: 30002  # Adjust as needed
   selector:
-    app: gestion-station-ski
+    app: gestion-station-ski-app
+  type: ClusterIP
 
 ---
 # Frontend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-deployment
+  name: sky-frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: sky-frontend
@@ -131,22 +159,27 @@ spec:
         app: sky-frontend
     spec:
       containers:
-        - name: sky-frontend
-          image: mohamedrayen/sky-front:3  # React frontend image
+        - name: frontend
+          image: mohamedrayen/sky-front:3
           ports:
             - containerPort: 3001
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 10
 
 ---
 # Frontend Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: sky-frontend-service
 spec:
-  type: NodePort
   ports:
     - port: 3001
       targetPort: 3001
-      nodePort: 30001  # Adjust as needed
   selector:
     app: sky-frontend
+  type: ClusterIP
