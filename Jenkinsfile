@@ -75,7 +75,7 @@ pipeline {
                 echo 'Starting Docker Compose...'
                 script {
                     // Run docker-compose up to start the containers
-                    sh 'docker-compose -f docker-compose.yml up -d'  // Adjust path to docker-compose.yml if needed
+                    sh 'docker compose -f docker-compose.yml up -d'  // Adjust path to docker-compose.yml if needed
                 }
             }
         }
