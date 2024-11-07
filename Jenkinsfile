@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
         DOCKER_IMAGE = 'mohamedrayen/sky_devops:2'
-        KUBECONFIG = '/path/to/kubeconfig' // Path to your Kubernetes config file on Jenkins
+        KUBECONFIG = '~/.kube/config' // Path to your Kubernetes config file on Jenkins
     }
 
     stages {
@@ -68,25 +68,6 @@ pipeline {
                 }
             }
         }
-
-       stage('Setup ClusterRoleBinding') {
-                   steps {
-                       script {
-                           sh 'kubectl apply -f jenkins-clusterrolebinding.yaml' // Ensure file is in workspace or use full path
-                       }
-                   }
-               }
-
-               stage('Kubernetes Test') {
-                   environment {
-                       KUBECONFIG = '/home/rayen/.kube/config' // Absolute path here as well
-                   }
-                   steps {
-                       script {
-                           sh 'kubectl get nodes'
-                       }
-                   }
-               }
 
 
     }
