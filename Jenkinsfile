@@ -60,7 +60,7 @@ pipeline {
             }
         }
 
-        stage('Docker Compose with Monitoring') {
+        stage('Docker Compose') {
             steps {
                 echo 'Starting application and monitoring services with Docker Compose...'
                 sh 'docker compose -f docker-compose.yml up -d'
