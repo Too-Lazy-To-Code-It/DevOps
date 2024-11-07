@@ -169,7 +169,7 @@ pipeline {
                 steps {
                 script {
                 docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                                                        sh 'docker push $DOCKER_REPO'
+                                                        sh 'docker push 2lazy2nameit/devops'
                                                     }
                                                 }
                                             }
@@ -179,7 +179,7 @@ pipeline {
                                                     steps {
                                                         echo "Scanning Docker image with Trivy..."
                                                         sh "trivy clean --java-db"
-                                                        sh 'trivy image --timeout 20m --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html $DOCKER_REPO'
+                                                        sh 'trivy image --timeout 20m --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html 2lazy2nameit/devops'
                                                     }
                                                 }
 
@@ -217,7 +217,7 @@ pipeline {
                 emailext (
                     subject: "${jobName} - Build ${buildNumber} - ${pipelineStatus.toUpperCase()}",
                     body: body,
-                    to: 'adam.rafraf@esprit.tn',
+                    to: '2lazy2nameit@gmail.com',
                     from: 'jenkins@example.com',
                     replyTo: 'jenkins@example.com',
                     mimeType: 'text/html',
