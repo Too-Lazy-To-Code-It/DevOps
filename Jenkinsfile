@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        /*stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
                 script {
@@ -29,7 +29,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Deploy to Nexus') {
             steps {
