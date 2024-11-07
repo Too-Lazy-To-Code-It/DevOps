@@ -1,23 +1,23 @@
-# Use a base image with Maven and OpenJDK
-FROM maven:3.8.6-openjdk-17-slim AS build
+# Use an OpenJDK base image with Maven
+FROM maven:3.8.6-openjdk-17-slim as build
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the pom.xml and source code into the container
+# Copy the Maven project’s pom.xml and the source code
 COPY pom.xml .
 COPY src ./src
 
-# Build the Spring Boot application with Maven
-RUN mvn clean install -DskipTests
+# Build the project using Maven
+RUN mvn clean package -DskipTests
 
-# Use a smaller image to run the application
+# Create a new image based on OpenJDK for running the application
 FROM openjdk:17-jdk-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the built JAR file from the build stage to the final image
+# Copy the JAR file from the build stage
 COPY --from=build /app/target/gestion-station-ski.jar app.jar
 
 # Expose the application port
