@@ -13,39 +13,22 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    echo 'Building Docker image...'
-                    sh 'docker build -t $DOCKER_IMAGE .'
-                }
-            }
-        }
 
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    echo 'Logging into Docker Hub...'
-                    withCredentials([usernamePassword(credentialsId: "$DOCKER_CREDENTIALS_ID", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    }
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    echo 'Pushing Docker image to Docker Hub...'
-                    sh 'docker push $DOCKER_IMAGE'
-                }
-            }
-        }
 
         stage('Maven Clean and Compile') {
             steps {
                 echo 'Running mvn clean compile...'
                 sh 'mvn clean compile'
+            }
+        }
+        stage('SonarQube / Jacoco') {
+            steps {
+                script {
+                    currentStage = 'SonarQube / Jacoco'
+                }
+                withSonarQubeEnv('SonarQube') {  // Use the SonarQube server name from the configuration
+                    sh 'mvn clean verify sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                }
             }
         }
     }

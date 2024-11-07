@@ -1,24 +1,16 @@
-# Use an OpenJDK base image with Maven
-FROM maven:3.8.6-openjdk-17-slim as build
-
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy the Maven project’s pom.xml and the source code
-COPY pom.xml .
-COPY src ./src
-
-# Build the project using Maven
-RUN mvn clean package -DskipTests
-
-# Create a new image based on OpenJDK for running the application
+# Use OpenJDK 17 as a base image
 FROM openjdk:17-jdk-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the JAR file from the build stage
-COPY --from=build /app/target/gestion-station-ski.jar app.jar
+# Install Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    apt-get clean;
+
+# Copy the compiled JAR file from the host to the container
+COPY target/gestion-station-ski.jar app.jar
 
 # Expose the application port
 EXPOSE 8089
