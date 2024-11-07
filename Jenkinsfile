@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'snowyxd/Devops_gamix'  // Docker image name (change this if needed)
+        DOCKER_IMAGE = 'snowyxd/devops_gamix'  // Docker image name (change this if needed)
         DOCKER_CREDENTIALS_ID = 'Docker-credentials'  // Jenkins credentials ID for Docker Hub
     }
 
