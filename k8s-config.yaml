@@ -35,10 +35,6 @@ spec:
               value: "0000"
             - name: MYSQL_DATABASE
               value: "stationSki"
-            - name: MYSQL_INITDB_SKIP_TZINFO
-              value: "yes"
-
-
           ports:
             - containerPort: 3306
           volumeMounts:
@@ -82,7 +78,7 @@ spec:
   clusterIP: None  # Headless service for internal access
 
 ---
-# App Deployment
+# App Deployment Spring
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -69,6 +69,13 @@ pipeline {
             }
         }
 
+         stage('Docker Compose') {
+                    steps {
+                        echo "K8S is Runing "
+                        //sh 'docker compose up -d'
+                    }
+         }
+
 
     }
 }
