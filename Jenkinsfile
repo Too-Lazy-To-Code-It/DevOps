@@ -69,11 +69,10 @@ pipeline {
             }
         }
 
-        stage('Kubernetes Deployment') {
+        stage('Kubernetes Test => get nodes') {
             steps {
                 script {
-                    // Make sure `kubectl` is installed and configured correctly on Jenkins
-                    sh 'kubectl apply -f k8s-config.yaml --validate=false'
+                    sh 'kubectl get nodes '
                 }
             }
         }
