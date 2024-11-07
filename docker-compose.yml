@@ -3,14 +3,14 @@ version: '3.8'
 services:
   mysql:
     image: mysql:latest
-    container_name: ski-db-container
+    container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: "ahmed"  # Set a secure password here
-      MYSQL_DATABASE: "ski_resort_db"
+      MYSQL_ROOT_PASSWORD: '0000'
+      MYSQL_DATABASE: 'stationSki'
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # Persist MySQL data
+      - mysql_data:/var/lib/mysql
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$MYSQL_ROOT_PASSWORD || exit 1"]
@@ -19,26 +19,28 @@ services:
       timeout: 30s
 
   app:
-    image: ${DOCKER_IMAGE}
-    container_name: ski-resort-app
+    image: 2lazy2nameit/devops:latest
+    container_name: Gestion-Skier
     depends_on:
       mysql:
         condition: service_healthy
     ports:
       - "8089:8089"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ski_resort_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stationSki?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 'password'
+      SPRING_DATASOURCE_PASSWORD: '0000'
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus
+      MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED: true
+      MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: true
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-    restart: always
+    restart: on-failure
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-
 volumes:
-  mysql_data:  # Volume for MySQL data persistence
+  mysql_data:
