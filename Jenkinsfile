@@ -76,7 +76,6 @@ pipeline {
                     sh 'pwd'
                     sh 'cd ..'
                     sh 'ls -l'
-                    sh 'kubectl apply -f jenkins-clusterrolebinding.yaml'
                 }
             }
         }
