@@ -1,19 +1,14 @@
-# Use OpenJDK 17 as a base image
+# Use a base image with Java 8 or later (Spring Boot needs Java)
 FROM openjdk:17-jdk-slim
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Install Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    apt-get clean;
-
-# Copy the compiled JAR file from the host to the container
+# Copy the JAR file to the container
 COPY target/gestion-station-ski.jar app.jar
 
-# Expose the application port
-EXPOSE 8089
+# Expose the port your Spring Boot app runs on (default 8080)
+EXPOSE 8080
 
-# Command to run the application
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

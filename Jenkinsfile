@@ -20,19 +20,57 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image for Spring Boot application...'
+                script {
+                    // Build the Spring Boot Docker image
+                    sh 'docker build -t $DOCKER_IMAGE .'
+                }
+            }
+        }
 
-      stage('JaCoCo Test Coverage and SonarQube Analysis') {
-       steps {
-           echo 'Running JaCoCo for code coverage and SonarQube analysis...'
-           script {
-               // Run SonarQube analysis and JaCoCo test coverage
-               withSonarQubeEnv('SonarQube') {
-                   sh 'mvn clean verify sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
-               }
-           }
-       }
-      }
+        stage('Docker Compose Up') {
+            steps {
+                echo 'Starting Docker Compose with Spring Boot and MySQL...'
+                script {
+                    // Run Docker Compose to start both Spring Boot app and MySQL container
+                    sh 'docker-compose -f docker-compose.yml up -d'
+                }
+            }
+        }
 
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        sh 'mvn clean verify sonar:sonar'
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    echo 'Pushing Docker image to Docker Hub...'
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        sh 'docker push $DOCKER_IMAGE'
+                    }
+                }
+            }
+        }
+
+        stage('Tear Down Docker Compose') {
+            steps {
+                echo 'Tearing down Docker Compose environment...'
+                script {
+                    // Shut down the Docker Compose services
+                    sh 'docker-compose down'
+                }
+            }
+        }
     }
 
     post {
