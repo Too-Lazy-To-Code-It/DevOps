@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'snowyxd/devops_gamix'  // Docker image name
-        DOCKER_CREDENTIALS_ID = 'Docker-credentials'  // Jenkins credentials ID for Docker Hub
+        DOCKER_IMAGE = 'snowyxd/devops_gamix'
+        DOCKER_CREDENTIALS_ID = 'Docker-credentials'
     }
 
     stages {
@@ -16,15 +16,15 @@ pipeline {
         stage('Maven Clean Install Compile') {
             steps {
                 echo 'Running mvn clean compile...'
-                sh 'mvn clean install compile'
+                sh 'mvn compile'
             }
         }
 
-        /*stage('Run Unit Tests with Mockito') {
+        stage('Run Unit Tests with Mockito') {
             steps {
                 echo 'Running unit tests with Mockito...'
                 script {
-                    // Run Maven test phase to execute unit tests (including Mockito tests)
+
                     sh 'mvn test'
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
         stage('Deploy to Nexus') {
             steps {
@@ -52,7 +52,7 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 script {
-                    // Build the Docker image using the provided Dockerfile
+
                     sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
@@ -62,7 +62,7 @@ pipeline {
             steps {
                 echo 'Pushing Docker image to Docker Hub...'
                 script {
-                    // Push the Docker image to Docker Hub
+
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                         sh "docker push ${DOCKER_IMAGE}"
                     }
@@ -74,8 +74,8 @@ pipeline {
             steps {
                 echo 'Starting Docker Compose...'
                 script {
-                    // Run docker-compose up to start the containers
-                    sh 'docker compose -f docker-compose.yml up -d'  // Adjust path to docker-compose.yml if needed
+
+                    sh 'docker compose -f docker-compose.yml up -d'
                 }
             }
         }

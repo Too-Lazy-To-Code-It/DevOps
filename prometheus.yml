@@ -1,0 +1,14 @@
+scrape_configs:
+  - job_name: 'node_exporter'           # Machine metrics
+    static_configs:
+      - targets: ['192.168.33.10:9100']     # Adjust to the actual host and port
+
+  - job_name: 'spring_boot_app'         # Spring Boot application
+    static_configs:
+      - targets: ['192.168.33.10:8089']     # Replace with the actual host and port
+        # Spring Boot should expose metrics at /actuator/prometheus if configured.
+
+  - job_name: 'jenkins'                 # Jenkins metrics
+    static_configs:
+      - targets: ['192.168.33.10:8081']     # Replace with actual Jenkins host and port
+        # Jenkins Prometheus plugin should expose metrics here.
