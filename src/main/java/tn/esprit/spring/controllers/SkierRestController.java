@@ -52,6 +52,7 @@ public class SkierRestController {
         return skierServices.retrieveSkiersBySubscriptionType(typeSubscription);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @Operation(description = "Retrieve Skier by Id")
     @GetMapping("/get/{id-skier}")
     public Skier getById(@PathVariable("id-skier") Long numSkier) {
