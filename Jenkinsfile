@@ -155,20 +155,24 @@ pipeline {
                 sh "trivy image --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html $DOCKER_REPO"
             }
         }
-        stage('Docker Image Push') {
-            steps {
-                docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                    sh 'docker push $DOCKER_REPO'
-                }
+stage('Docker Image Push') {
+    steps {
+        script {
+            docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
+                sh 'docker push $DOCKER_REPO:$BUILD_NUMBER'
             }
         }
-        stage('Push Angular Docker Image') {
-            steps {
-                docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                    sh 'docker push $DOCKER_REPO_ANGULAR'
-                }
+    }
+}
+stage('Push Angular Docker Image') {
+    steps {
+        script {
+            docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
+                sh 'docker push $DOCKER_REPO_ANGULAR:$BUILD_NUMBER'
             }
         }
+    }
+
         stage('Docker Compose') {
             steps {
                 sh 'docker compose -f docker-compose.yml up -d'
