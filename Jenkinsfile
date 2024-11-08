@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Checkout Angular') {
             steps {
-                git url: "${ANGULAR_REPO}", branch: 'main'
+                git url: "${ANGULAR_REPO}", branch: 'master'
             }
         }
         stage('OWASP Scan') {
@@ -159,7 +159,7 @@ stage('Docker Image Push') {
     steps {
         script {
             docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                sh 'docker push $DOCKER_REPO:$BUILD_NUMBER'
+                sh 'docker push $DOCKER_REPO'
             }
         }
     }
@@ -168,7 +168,7 @@ stage('Push Angular Docker Image') {
     steps {
         script {
             docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                sh 'docker push $DOCKER_REPO_ANGULAR:$BUILD_NUMBER'
+                sh 'docker push $DOCKER_REPO_ANGULAR'
             }
         }
     }
