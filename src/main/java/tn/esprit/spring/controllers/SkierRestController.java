@@ -18,7 +18,7 @@ public class SkierRestController {
 
     private final ISkierServices skierServices;
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://0ffd-197-25-194-11.ngrok-free.app")
     @Operation(description = "Add Skier")
     @PostMapping("/add")
     public Skier addSkier(@RequestBody Skier skier) {
@@ -45,14 +45,14 @@ public class SkierRestController {
                                @PathVariable("numPiste") Long numPiste) {
         return skierServices.assignSkierToPiste(numSkier, numPiste);
     }
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://0ffd-197-25-194-11.ngrok-free.app")
     @Operation(description = "retrieve Skiers By Subscription Type")
     @GetMapping("/getSkiersBySubscription")
     public List<Skier> retrieveSkiersBySubscriptionType(TypeSubscription typeSubscription) {
         return skierServices.retrieveSkiersBySubscriptionType(typeSubscription);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://0ffd-197-25-194-11.ngrok-free.app")
     @Operation(description = "Retrieve Skier by Id")
     @GetMapping("/get/{id-skier}")
     public Skier getById(@PathVariable("id-skier") Long numSkier) {
@@ -65,7 +65,7 @@ public class SkierRestController {
         skierServices.removeSkier(numSkier);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://0ffd-197-25-194-11.ngrok-free.app")
     @Operation(description = "Retrieve all Skiers")
     @GetMapping("/all")
     public List<Skier> getAllSkiers() {
