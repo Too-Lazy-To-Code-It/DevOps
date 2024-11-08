@@ -64,6 +64,7 @@ public class SkierRestController {
         skierServices.removeSkier(numSkier);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @Operation(description = "Retrieve all Skiers")
     @GetMapping("/all")
     public List<Skier> getAllSkiers() {
