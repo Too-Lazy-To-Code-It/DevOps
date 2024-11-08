@@ -22,20 +22,26 @@ pipeline {
                 deleteDir()
             }
         }
-        stage('Checkout GIT') {
-            steps {
-                withCredentials([string(credentialsId: 'github-adam', variable: 'GITHUB_TOKEN')]) {
-                    sh '''
-                        git clone --branch Adam https://Too-Lazy-To-Code-It:${GITHUB_TOKEN}@github.com/Too-Lazy-To-Code-It/DevOps.git
-                    '''
-                }
+stage('Checkout GIT') {
+    steps {
+        dir('backend') {
+            withCredentials([string(credentialsId: 'github-adam', variable: 'GITHUB_TOKEN')]) {
+                sh '''
+                    git clone --branch Adam https://Too-Lazy-To-Code-It:${GITHUB_TOKEN}@github.com/Too-Lazy-To-Code-It/DevOps.git .
+                '''
             }
         }
-        stage('Checkout Angular') {
-            steps {
-                git url: "${ANGULAR_REPO}", branch: 'master'
-            }
+    }
+}
+
+stage('Checkout Angular') {
+    steps {
+        dir('frontend') {
+            git url: "${ANGULAR_REPO}", branch: 'main'
         }
+    }
+}
+
         stage('OWASP Scan') {
             steps {
                 echo "Cleaning up OWASP Dependency Check database files..."
