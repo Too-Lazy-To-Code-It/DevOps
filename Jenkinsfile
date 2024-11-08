@@ -172,6 +172,7 @@ stage('Push Angular Docker Image') {
             }
         }
     }
+    }
 
         stage('Docker Compose') {
             steps {
