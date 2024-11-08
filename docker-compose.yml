@@ -45,7 +45,7 @@ services:
     restart: on-failure
 
   frontend:
-    image: mohamedrayen/sky-front:3
+    image: mohamedrayen/sky-front:4
     container_name: sky-frontend
     depends_on:
       app:
