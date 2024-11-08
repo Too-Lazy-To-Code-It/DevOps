@@ -18,6 +18,7 @@ public class SkierRestController {
 
     private final ISkierServices skierServices;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @Operation(description = "Add Skier")
     @PostMapping("/add")
     public Skier addSkier(@RequestBody Skier skier) {
