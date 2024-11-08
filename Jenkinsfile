@@ -153,7 +153,7 @@ pipeline {
 
         stage('Docker Image Building') {
             steps {
-                sh 'docker build -t $DOCKER_REPO .'
+                sh 'docker build --no-cache -t $DOCKER_REPO .'
             }
         }
 
