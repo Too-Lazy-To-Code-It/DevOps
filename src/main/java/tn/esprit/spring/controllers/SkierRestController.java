@@ -45,7 +45,7 @@ public class SkierRestController {
                                @PathVariable("numPiste") Long numPiste) {
         return skierServices.assignSkierToPiste(numSkier, numPiste);
     }
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @Operation(description = "retrieve Skiers By Subscription Type")
     @GetMapping("/getSkiersBySubscription")
     public List<Skier> retrieveSkiersBySubscriptionType(TypeSubscription typeSubscription) {
