@@ -1,26 +1,21 @@
 pipeline {
     environment {
-
-
-       DOCKER_NAME = 'DOCKER'
-            DOCKER_REPO = '2lazy2nameit/devops'
-                     SCANNER_HOME = tool 'sonar-scanner'
-                       // This can be nexus3 or nexus2
-                    NEXUS_VERSION = "nexus3"
-                    // This can be http or https
-                    NEXUS_PROTOCOL = "http"
-                    // Where your Nexus is running
-                    NEXUS_URL = "192.168.223.128:8081"
-                    // Repository where we will upload the artifact
-                    NEXUS_REPOSITORY = "maven-releases"
-                    // Jenkins credential id to authenticate to Nexus OSS
-                    NEXUS_CREDENTIAL_ID = "nexusCredential"
-                    ARTIFACT_VERSION = "1.0"
+        ANGULAR_REPO = 'https://github.com/Too-Lazy-To-Code-It/Devops-Front.git'
+        DOCKER_REPO_ANGULAR = '2lazy2nameit/angulardevops'
+        DOCKER_NAME = 'DOCKER'
+        DOCKER_REPO = '2lazy2nameit/devops'
+        SCANNER_HOME = tool 'sonar-scanner'
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = "192.168.223.128:8081"
+        NEXUS_REPOSITORY = "maven-releases"
+        NEXUS_CREDENTIAL_ID = "nexusCredential"
+        ARTIFACT_VERSION = "1.0"
     }
     agent any
-     triggers {
-    githubPush()
-  }
+    triggers {
+        githubPush()
+    }
     stages {
         stage("Clean Up") {
             steps {
@@ -36,11 +31,14 @@ pipeline {
                 }
             }
         }
+        stage('Checkout Angular') {
+            steps {
+                git url: "${ANGULAR_REPO}", branch: 'main'
+            }
+        }
         stage('OWASP Scan') {
             steps {
                 echo "Cleaning up OWASP Dependency Check database files..."
-
-                // Delete the old database files if they exist
                 sh '''
                     if [ -f /data/jenkins/nvid/dc.h2.db ]; then
                         rm /data/jenkins/nvid/dc.h2.db
@@ -53,88 +51,60 @@ pipeline {
                     fi
                 '''
                 echo "Running OWASP Dependency Check..."
-
-                // Run the OWASP Dependency Check against the project
                 dependencyCheck additionalArguments: '', odcInstallation: 'owasp-m'
-
-                // Publish the Dependency Check report
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
         stage("Move Project Files") {
             steps {
                 sh '''
-                    mv DevOps/* . || true  # Move all contents of the project directory to the current directory
-
+                    mv DevOps/* . || true
                 '''
             }
         }
         stage("Maven clean") {
             steps {
-                script {
-                    sh '''
-                        ls -l /var/lib/jenkins/workspace/DevOps &&
-                        mvn clean
-                    '''
-                }
+                sh '''
+                    ls -l /var/lib/jenkins/workspace/DevOps &&
+                    mvn clean
+                '''
             }
         }
         stage('Compile Artifact') {
             steps {
                 echo "Compiling..."
-                sh 'mvn compile' // Compile the project
+                sh 'mvn compile'
             }
         }
         stage('Run Tests mockito') {
             steps {
-                script {
-                    // Run tests with Maven
-                    sh 'mvn test'
-                }
+                sh 'mvn test'
             }
         }
-
-
-
         stage('mvn package') {
             steps {
                 sh 'mvn package -DskipTests'
             }
         }
-
         stage('JaCoCo Report') {
             steps {
-                // Generate the JaCoCo report
                 sh 'mvn jacoco:report'
             }
         }
         stage('Copy JaCoCo Report') {
             steps {
-
-                // Copy the JaCoCo report to the Jenkins workspace
                 sh 'cp -R target/site/jacoco/index.html .'
             }
         }
-
-
-
-                stage("publish to nexus") {
+        stage("Publish to Nexus") {
             steps {
                 script {
-                    // Read POM xml file using 'readMavenPom' step , this step 'readMavenPom' is included in: https://plugins.jenkins.io/pipeline-utility-steps
-                    pom = readMavenPom file: "pom.xml";
-                    // Find built artifact under target folder
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    // Print some info from the artifact found
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    // Extract the path from the File found
-                    artifactPath = filesByGlob[0].path;
-                    // Assign to a boolean response verifying If the artifact name exists
-                    artifactExists = fileExists artifactPath;
+                    pom = readMavenPom file: "pom.xml"
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+                    artifactPath = filesByGlob[0].path
+                    artifactExists = fileExists artifactPath
 
                     if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-
                         nexusArtifactUploader(
                             nexusVersion: NEXUS_VERSION,
                             protocol: NEXUS_PROTOCOL,
@@ -144,121 +114,98 @@ pipeline {
                             repository: NEXUS_REPOSITORY,
                             credentialsId: NEXUS_CREDENTIAL_ID,
                             artifacts: [
-                                // Artifact generated such as .jar, .ear and .war files.
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging]
+                                [artifactId: pom.artifactId, classifier: '', file: artifactPath, type: pom.packaging]
                             ]
-                        );
-
+                        )
                     } else {
-                        error "*** File: ${artifactPath}, could not be found";
+                        error "*** File: ${artifactPath}, could not be found"
                     }
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-       stage('SonarQube Quality') {
-                       steps {
-                                withSonarQubeEnv('sonarqube') {
-                                    sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
-                                }
-                            }
-                        }
-                        stage('SonarQube Analysis(SAST)') {
-                                    steps {
-                                      withCredentials([ string(credentialsId: 'Sonarqube-url', variable: 'SONARQUBE_HOST_URL'),
-                        string(credentialsId: 'sonarqube', variable: 'SONARQUBE_LOGIN') ]) {
-                                            sh '''$SCANNER_HOME/bin/sonar-scanner \
-                                                -Dsonar.host.url=${SONARQUBE_HOST_URL} \
-                                                -Dsonar.token=${SONARQUBE_LOGIN} \
-                                                -Dsonar.projectName=Devops \
-                                                -Dsonar.java.binaries=. \
-                                               -Dsonar.projectKey=DevopsJenkins '''   }
-
-                                    }
-                                }
-
-
-
-          stage('Docker Image Building') {
-                    steps {
-
-                         sh 'docker build -t $DOCKER_REPO  .'
-                            }
-                        }
+        stage('SonarQube Quality') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                }
+            }
+        }
+        stage('SonarQube Analysis(SAST)') {
+            steps {
+                withCredentials([ string(credentialsId: 'Sonarqube-url', variable: 'SONARQUBE_HOST_URL'),
+                                  string(credentialsId: 'sonarqube', variable: 'SONARQUBE_LOGIN') ]) {
+                    sh '''$SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.host.url=${SONARQUBE_HOST_URL} \
+                        -Dsonar.token=${SONARQUBE_LOGIN} \
+                        -Dsonar.projectName=Devops \
+                        -Dsonar.java.binaries=. \
+                        -Dsonar.projectKey=DevopsJenkins'''
+                }
+            }
+        }
+        stage('Docker Image Building') {
+            steps {
+                sh 'docker build -t $DOCKER_REPO:$BUILD_NUMBER .'
+            }
+        }
         stage('Docker Image Scan') {
             steps {
                 echo "Scanning Docker image with Trivy..."
-                 sh "trivy clean --java-db"
-
-                sh "trivy image  --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html 2lazy2nameit/devops "
+                sh "trivy clean --java-db"
+                sh "trivy image --format table --scanners vuln --debug --ignore-unfixed -o trivy-imageesprit-report.html $DOCKER_REPO"
             }
         }
-          stage('Docker Image push') {
-                steps {
-                script {
+        stage('Docker Image Push') {
+            steps {
                 docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                                                        sh 'docker push 2lazy2nameit/devops'
-                                                    }
-                                                }
-                                            }
-                                        }
-
-
-
-                                 stage('Docker Compose ') {
-                                            steps {
-                                                echo 'Application on starting and monitoring dcoker composing..'
-                                                sh 'docker compose -f docker-compose.yml up -d'
-                                            }
-                                        }
-
-    }
-
-    post {
-    always {
-        script {
-            def jobName = env.JOB_NAME
-            def buildNumber = env.BUILD_NUMBER
-            def pipelineStatus = currentBuild.result ?: 'UNKNOWN'
-            def bannerColor = pipelineStatus.toUpperCase() == 'SUCCESS' ? 'green' : 'red'
-
-            def body = """
-            <html>
-                <body>
-                    <div style="border: 4px solid ${bannerColor}; padding: 10px;">
-                        <h2>${jobName} - Build ${buildNumber}</h2>
-                        <div style="background-color: ${bannerColor}; padding: 10px;">
-                            <h3 style="color: white;">Pipeline Status: ${pipelineStatus.toUpperCase()}</h3>
-                        </div>
-                    </div>
-
-                </body>
-            </html>
-            """
-
-            emailext (
-                subject: "${jobName} - Build ${buildNumber} - ${pipelineStatus.toUpperCase()}",
-                body: body,
-                to: 'adam.rafraf@esprit.tn',
-                from: 'jenkins@example.com',
-                replyTo: 'jenkins@example.com',
-                mimeType: 'text/html',
-               attachmentsPattern: 'trivy-imageesprit-report.html,index.html,dependency-check-report.xml'
-
-            )
+                    sh 'docker push $DOCKER_REPO:$BUILD_NUMBER'
+                }
+            }
+        }
+        stage('Push Angular Docker Image') {
+            steps {
+                docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
+                    sh 'docker push $DOCKER_REPO_ANGULAR:$BUILD_NUMBER'
+                }
+            }
+        }
+        stage('Docker Compose') {
+            steps {
+                sh 'docker compose -f docker-compose.yml up -d'
+            }
         }
     }
-}
+    post {
+        always {
+            script {
+                def jobName = env.JOB_NAME
+                def buildNumber = env.BUILD_NUMBER
+                def pipelineStatus = currentBuild.result ?: 'UNKNOWN'
+                def bannerColor = pipelineStatus.toUpperCase() == 'SUCCESS' ? 'green' : 'red'
 
+                def body = """
+                <html>
+                    <body>
+                        <div style="border: 4px solid ${bannerColor}; padding: 10px;">
+                            <h2>${jobName} - Build ${buildNumber}</h2>
+                            <div style="background-color: ${bannerColor}; padding: 10px;">
+                                <h3 style="color: white;">Pipeline Status: ${pipelineStatus.toUpperCase()}</h3>
+                            </div>
+                        </div>
+                    </body>
+                </html>
+                """
+
+                emailext(
+                    subject: "${jobName} - Build ${buildNumber} - ${pipelineStatus.toUpperCase()}",
+                    body: body,
+                    to: 'adam.rafraf@esprit.tn',
+                    from: 'jenkins@example.com',
+                    replyTo: 'jenkins@example.com',
+                    mimeType: 'text/html',
+                    attachmentsPattern: 'trivy-imageesprit-report.html,index.html,dependency-check-report.xml'
+                )
+            }
+        }
+    }
 }
