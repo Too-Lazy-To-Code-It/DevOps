@@ -18,7 +18,7 @@ services:
       interval: 5s
       timeout: 30s
 
-  backend-app:
+  app:
     image: 2lazy2nameit/devops:latest
     container_name: Gestion-Skier
     depends_on:
@@ -30,16 +30,17 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stationSki?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: '0000'
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus
+      MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED: true
+      MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: true
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
     restart: on-failure
-
-  frontend-app:
-    image: 2lazy2nameit/angulardevops:latest
-    container_name: AngularApp
-    ports:
-      - "80:80"
-    depends_on:
-      backend-app:
-        condition: service_started
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 volumes:
   mysql_data:
