@@ -158,14 +158,14 @@ pipeline {
         stage('Docker Image Push') {
             steps {
                 docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                    sh 'docker push $DOCKER_REPO:$BUILD_NUMBER'
+                    sh 'docker push $DOCKER_REPO'
                 }
             }
         }
         stage('Push Angular Docker Image') {
             steps {
                 docker.withRegistry('https://index.docker.io/v1/', DOCKER_NAME) {
-                    sh 'docker push $DOCKER_REPO_ANGULAR:$BUILD_NUMBER'
+                    sh 'docker push $DOCKER_REPO_ANGULAR'
                 }
             }
         }
